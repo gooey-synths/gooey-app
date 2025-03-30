@@ -33,7 +33,7 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/tailwindcss/tailwind.css"
+              "node_modules/tailwindcss/index.css"
             ],
             "scripts": []
           },
