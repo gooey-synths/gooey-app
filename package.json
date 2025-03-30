@@ -8,6 +8,7 @@
     "build:electron": "electron-builder",
     "lint": "ng lint",
     "test": "ng test --watch=false",
+    "test:ci": "ng test --no-watch --no-progress --browsers=ChromeHeadless",
     "test:e2e": "playwright test",
     "release": "npm run build && electron-builder --publish=always"
   },
