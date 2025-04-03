@@ -42,6 +42,9 @@ jobs:
           name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
-          files: out/make/**/* # Upload all generated installers
+          files: |
+            out/make/*.exe 
+            out/make/*.dmg 
+            out/make/*.deb 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
