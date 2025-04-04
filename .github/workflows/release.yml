@@ -4,7 +4,6 @@ on:
   push:
     tags:
       - "v*"
-  workflow_dispatch: # Allows manual trigger
 
 jobs:
   build:
@@ -43,8 +42,8 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            out/make/*.exe 
-            out/make/*.dmg 
-            out/make/*.deb 
+            out/make/**/*.exe 
+            out/make/**/*.dmg 
+            out/make/**/*.deb 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
