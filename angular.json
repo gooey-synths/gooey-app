@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/gooey-app",
+            "outputPath": "electron/dist/gooey-app",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -33,7 +33,7 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/tailwindcss/tailwind.css"
+              "node_modules/tailwindcss/index.css"
             ],
             "scripts": []
           },
@@ -94,7 +94,8 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "karmaConfig": "karma.conf.js"
           }
         },
         "lint": {
