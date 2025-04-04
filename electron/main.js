@@ -3,7 +3,7 @@ const path = require('path');
 
 let mainWindow;
 
-const feedURL = 'https://github.com/gooey-synths/gooey-app/releases/latest/download/update.json';
+const feedURL = 'https://github.com/gooey-synths/gooey-app/releases/latest';
 
 autoUpdater.setFeedURL({ url: feedURL });
 

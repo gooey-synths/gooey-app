@@ -34,16 +34,7 @@ jobs:
           path: out/make/**/* 
 
       - name: Publish to GitHub Releases
-        if: startsWith(github.ref, 'refs/tags/') # Only on tags
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-          files: |
-            out/make/**/*.exe 
-            out/make/**/*.dmg 
-            out/make/**/*.deb 
+        if: startsWith(github.ref, 'refs/tags/')
+        run: npx electron-forge publish --verbose
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
