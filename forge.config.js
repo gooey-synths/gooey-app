@@ -26,7 +26,9 @@ module.exports = {
           owner: "gooey-synths",
           name: "gooey-app"
         },
-        prerelease: false
+        prerelease: false,
+        draft: false,
+        tagPrefix: "v"
       }
     }
   ]
