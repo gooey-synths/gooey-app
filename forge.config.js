@@ -17,5 +17,17 @@ module.exports = {
       name: '@electron-forge/maker-deb', // Linux
       config: {}
     }
+  ],
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "gooey-synths",
+          name: "gooey-app"
+        },
+        prerelease: false
+      }
+    }
   ]
 };
