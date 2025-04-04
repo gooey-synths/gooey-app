@@ -1,6 +1,5 @@
 {
   "name": "gooey-app",
-  "version": "0.0.0",
   "main": "electron/main.js",
   "author": "Gooey Synths",
   "description": "The gooey app.",
