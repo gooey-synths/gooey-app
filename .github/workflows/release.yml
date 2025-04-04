@@ -34,16 +34,13 @@ jobs:
           path: out/make/**/* 
 
       - name: Publish to GitHub Releases
-        if: startsWith(github.ref, 'refs/tags/') # Only on tags
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
-          files: |
-            out/make/**/*.exe 
-            out/make/**/*.dmg 
-            out/make/**/*.deb 
+          files: out/make/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
