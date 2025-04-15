@@ -20,6 +20,23 @@ app.whenReady().then(() => {
   const isProd = process.env.NODE_ENV === 'production' || app.isPackaged;
 
   if (isProd) {
+    const feed = 'https://github.com/your-username/your-repo/releases/latest';
+    autoUpdater.setFeedURL({ url: feed });
+    autoUpdater.checkForUpdates();
+
+    autoUpdater.on('update-available', () => {
+      console.log('Update available');
+    });
+    autoUpdater.on('update-downloaded', () => {
+      console.log('Update downloaded; installing...');
+      autoUpdater.quitAndInstall();
+    });
+    autoUpdater.on('error', (err) => {
+      console.error('Update error:', err);
+    });
+
+    // Log current version
+    console.log('Current version:', app.getVersion());
     mainWindow.loadURL(`file://${path.join(__dirname, 'dist/gooey-app/browser/index.html')}`);
   } else {
     mainWindow.loadURL('http://localhost:4200');
