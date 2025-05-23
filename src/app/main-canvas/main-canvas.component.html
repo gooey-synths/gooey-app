@@ -1,15 +1,20 @@
 
 <p class="text-gray-400 text-center mt-32">Drag and drop elements to start building</p>
-<f-flow fDraggable>
-<f-canvas>
-    <f-connection fOutputId="output1" fInputId="input1"></f-connection>
-    <div fNode fDragHandle [fNodePosition]="{ x: 24, y: 24 }" fNodeOutput fOutputId="output1"
-    fOutputConnectableSide="right">
-    Node 1
-    </div>
-    <div fNode fDragHandle [fNodePosition]="{ x: 244, y: 24 }" fNodeInput fInputId="input1"
-    fInputConnectableSide="left">
-    Node 2
-    </div>
-</f-canvas>
+<f-flow fDraggable (fCreateNode)="onDrop($event)">
+    <f-canvas>
+        @for (node of (nodeList$ | async); track node.type) {
+            <div fNode fDragHandle [fNodePosition]="{ x: node.x, y: node.y }">
+                {{ node.type }}
+            </div>
+        }
+        <f-connection fOutputId="output1" fInputId="input1"></f-connection>
+        <div fNode fDragHandle [fNodePosition]="{ x: 24, y: 24 }" fNodeOutput fOutputId="output1"
+            fOutputConnectableSide="right">
+            Node 1
+        </div>
+        <div fNode fDragHandle [fNodePosition]="{ x: 244, y: 24 }" fNodeInput fInputId="input1"
+            fInputConnectableSide="left">
+            Node 2
+        </div>
+    </f-canvas>
 </f-flow>
