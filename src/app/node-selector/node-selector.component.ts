@@ -8,5 +8,18 @@ import { FFlowModule } from '@foblex/flow';
   styleUrl: './node-selector.component.scss'
 })
 export class SidebarComponent {
-
+  nodeTypes = [
+    {
+      name: 'Node 1'
+    },
+    {
+      name: 'Node 2'
+    },
+    {
+      name: 'Node 3'
+    },
+    {
+      name: 'Node 4'
+    },
+  ]
 }

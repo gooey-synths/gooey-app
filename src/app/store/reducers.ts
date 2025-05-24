@@ -1,8 +1,15 @@
 import { createReducer, on } from '@ngrx/store';
 import { addNode } from './actions';
 
+interface Node {
+  x: number,
+  y: number,
+  name: string
+  id: string
+}
+
 export interface FlowchartState {
-  nodes: { type: string; x: number; y: number }[];
+  nodes: Node[];
 }
 
 export const initialState: FlowchartState = {
