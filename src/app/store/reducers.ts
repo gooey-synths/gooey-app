@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { addNode } from './actions';
 
-interface Node {
+export interface Node {
   x: number,
   y: number,
   name: string

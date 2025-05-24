@@ -1,9 +1,9 @@
-import { flowchartReducer, initialState, FlowchartState } from './reducers';
+import { flowchartReducer, initialState } from './reducers';
 import { addNode } from './actions';
 
 describe('Flowchart Reducer', () => {
   it('should return the initial state by default', () => {
-    const action = { type: 'Unknown' } as any;
+    const action = { type: 'Unknown' };
     const state = flowchartReducer(undefined, action);
     expect(state).toEqual(initialState);
   });

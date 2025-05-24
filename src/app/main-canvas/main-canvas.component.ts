@@ -22,7 +22,7 @@ export class MainCanvasComponent {
   nodeList$ = this.store.pipe(select(selectAllNodes));
 
   onDrop(ev: FCreateNodeEvent) {
-    let node = {
+    const node = {
       id: crypto.randomUUID(), 
       name: ev.data,
       x: ev.rect.x,

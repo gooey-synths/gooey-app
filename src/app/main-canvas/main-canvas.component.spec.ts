@@ -42,7 +42,7 @@ describe('MainCanvasComponent', () => {
   });
 
   it('should have 2 nodes in the nodeList from the store', () => {
-    let storeNodes: any[] = [];
+    let storeNodes = [];
 
     component.nodeList$.pipe(take(1)).subscribe(data => storeNodes = data);
 
@@ -50,7 +50,7 @@ describe('MainCanvasComponent', () => {
   });
 
   it('Dropping a node on the canvas should add one to the list', () => {
-    let dropEvent = {
+    const dropEvent = {
       data: 'Test',
       rect: {
         x: 100,
