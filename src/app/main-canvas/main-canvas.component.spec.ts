@@ -10,8 +10,8 @@ describe('MainCanvasComponent', () => {
   let store: MockStore;
   let dispatchSpy: jasmine.Spy;
   const mockNodes = [
-    { id: '1', type: 'Start/End', x: 100, y: 100 },
-    { id: '2', type: 'Process', x: 200, y: 200 },
+    { id: '1', name: 'Node 1', x: 100, y: 100 },
+    { id: '2', name: 'Node 2c', x: 200, y: 200 },
   ];
 
   beforeEach(async () => {
@@ -50,7 +50,6 @@ describe('MainCanvasComponent', () => {
   });
 
   it('Dropping a node on the canvas should add one to the list', () => {
-    let storeNodes: any[] = [];
     let dropEvent = {
       data: 'Test',
       rect: {
