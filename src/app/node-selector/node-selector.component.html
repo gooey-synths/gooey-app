@@ -1,7 +1,6 @@
 <h2 class="text-md font-semibold mb-4">Elements</h2>
-<ul class="space-y-2">
-    <li class="p-2 bg-white rounded shadow hover:bg-gray-50 cursor-pointer">Node 1</li>
-    <li class="p-2 bg-white rounded shadow hover:bg-gray-50 cursor-pointer">Node 2</li>
-    <li class="p-2 bg-white rounded shadow hover:bg-gray-50 cursor-pointer">Node 3</li>
-    <li class="p-2 bg-white rounded shadow hover:bg-gray-50 cursor-pointer">Node 4</li>
-</ul>
+<div class="space-y-2">
+    @for (node of nodeTypes; track $index) {
+        <div [fData]="node.name" fExternalItem class="p-2 bg-white rounded shadow hover:bg-gray-50 cursor-pointer">{{ node.name }}</div>
+    }
+</div>
