@@ -8,6 +8,7 @@
 /dist_electron
 /out
 /electron/dist
+*.css
 
 # Node
 /node_modules
