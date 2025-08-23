@@ -7,8 +7,8 @@
         @for (node of (nodeList$ | async); track node.id) {
             <div fNode fDragHandle [fNodePosition]="{ x: node.x, y: node.y }">
                 {{ node.name }}
-                <div fNodeOutput [fOutputId]="node.id" fOutputConnectableSide="right"></div>
-                <div fNodeInput [fInputId]="node.id" fOutputConnectableSide="left"></div>
+                <div fNodeOutput [fOutputId]="node.id" fOutputConnectableSide="right" [fOutputMultiple]="true"></div>
+                <div fNodeInput [fInputId]="node.id" fOutputConnectableSide="left" [fInputMultiple]="true"></div>
                 <div fNodeOutlet></div>
             </div>
         }
@@ -16,7 +16,8 @@
           <f-connection fBehavior="floating"
                     fType="straight"
                     [fText]="connection.id"
-                    [fOutputId]="connection.start" [fInputId]="connection.end">
+                    [fOutputId]="connection.start" [fInputId]="connection.end"
+                    >
           </f-connection>
         }
     </f-canvas>

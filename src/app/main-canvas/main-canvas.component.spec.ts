@@ -100,4 +100,36 @@ describe('MainCanvasComponent', () => {
 
     expect(dispatchSpy).toHaveBeenCalled();
   });
+
+  it('Connecting two nodes should fail if missing an input', () => {
+    const connectionEvent = {
+      data: 'Test',
+      fOutputId: '',
+      fInputId: '2',
+      fDropPosition: {
+        x: 100,
+        y: 100
+      }
+    };
+
+    component.onConnect(connectionEvent);
+
+    expect(dispatchSpy).not.toHaveBeenCalled();
+  });
+
+  it('Connecting two nodes should fail if missing an output', () => {
+    const connectionEvent = {
+      data: 'Test',
+      fOutputId: '1',
+      fInputId: '',
+      fDropPosition: {
+        x: 100,
+        y: 100
+      }
+    };
+
+    component.onConnect(connectionEvent);
+
+    expect(dispatchSpy).not.toHaveBeenCalled();
+  });
 });

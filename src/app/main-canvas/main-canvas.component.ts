@@ -34,11 +34,18 @@ export class MainCanvasComponent {
   }
 
   onConnect(ev: FCreateConnectionEvent) {
-    console.log(ev)
+    if (!ev.fInputId) {
+      console.error('Need input to create connection')
+      return
+    }
+    if (!ev.fOutputId) {
+      console.error('Need output to create connection')
+      return
+    }
     const connection = {
       id: crypto.randomUUID(),
-      start: ev.fOutputId!,
-      end: ev.fInputId!
+      start: ev.fOutputId,
+      end: ev.fInputId
     }
     this.store.dispatch(addConnection({ connection }));
   }
