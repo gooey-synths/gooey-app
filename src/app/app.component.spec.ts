@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { provideMockStore } from '@ngrx/store/testing';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -9,10 +10,11 @@ describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
-      // declarations: [AppComponent],
+      providers: [
+        provideMockStore(),
+      ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
-
 
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
