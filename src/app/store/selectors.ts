@@ -7,3 +7,8 @@ export const selectAllNodes = createSelector(
   selectFlowchartState,
   (state) => state.nodes
 );
+
+export const selectAllConnections = createSelector(
+  selectFlowchartState,
+  (state) => state.connections
+);

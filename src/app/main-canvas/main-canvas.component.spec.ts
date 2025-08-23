@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { MainCanvasComponent } from './main-canvas.component';
-import { selectAllNodes } from '../store/selectors';
+import { selectAllConnections, selectAllNodes } from '../store/selectors';
 import { take } from 'rxjs';
 
 describe('MainCanvasComponent', () => {
@@ -14,6 +14,10 @@ describe('MainCanvasComponent', () => {
     { id: '2', name: 'Node 2c', x: 200, y: 200 },
   ];
 
+  const mockConnection = [
+    { id: '3', start: '1', end: '2' },
+  ];
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MainCanvasComponent],
@@ -23,6 +27,10 @@ describe('MainCanvasComponent', () => {
             {
               selector: selectAllNodes,
               value: mockNodes,
+            },
+            {
+              selector: selectAllConnections,
+              value: mockConnection,
             },
           ],
         }),
@@ -49,6 +57,14 @@ describe('MainCanvasComponent', () => {
     expect(storeNodes.length).toEqual(mockNodes.length);
   });
 
+  it('should have 1 connection in the connectionList from the store', () => {
+    let storeConnections = [];
+
+    component.connectionList$.pipe(take(1)).subscribe(data => storeConnections = data);
+
+    expect(storeConnections.length).toEqual(mockConnection.length);
+  });
+
   it('Dropping a node on the canvas should add one to the list', () => {
     const dropEvent = {
       data: 'Test',
@@ -65,6 +81,22 @@ describe('MainCanvasComponent', () => {
     };
 
     component.onDrop(dropEvent);
+
+    expect(dispatchSpy).toHaveBeenCalled();
+  });
+
+  it('Connecting two nodes should add a connection to the connection list', () => {
+    const connectionEvent = {
+      data: 'Test',
+      fOutputId: '1',
+      fInputId: '2',
+      fDropPosition: {
+        x: 100,
+        y: 100
+      }
+    };
+
+    component.onConnect(connectionEvent);
 
     expect(dispatchSpy).toHaveBeenCalled();
   });

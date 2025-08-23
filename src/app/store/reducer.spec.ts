@@ -1,5 +1,5 @@
 import { flowchartReducer, initialState } from './reducers';
-import { addNode } from './actions';
+import { addConnection, addNode } from './actions';
 
 describe('Flowchart Reducer', () => {
   it('should return the initial state by default', () => {
@@ -15,6 +15,15 @@ describe('Flowchart Reducer', () => {
 
     expect(state.nodes.length).toBe(1);
     expect(state.nodes[0]).toEqual(node);
+  });
+
+  it('should add an element on addConnection action', () => {
+    const connection = { id: '1234', start: '1', end: '2' };
+    const action = addConnection({ connection });
+    const state = flowchartReducer(initialState, action);
+
+    expect(state.connections.length).toBe(1);
+    expect(state.connections[0]).toEqual(connection);
   });
 
   it('should add multiple elements cumulatively', () => {

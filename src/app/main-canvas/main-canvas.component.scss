@@ -5,3 +5,10 @@ div[fNode] {
     border-radius: 4px;
     cursor: grab;
 }
+
+div[fNodeOutlet], div[fNodeOuput] {
+    background: blue;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+  }
