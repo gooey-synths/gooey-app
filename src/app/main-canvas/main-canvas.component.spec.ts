@@ -3,6 +3,7 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { MainCanvasComponent } from './main-canvas.component';
 import { selectAllConnections, selectAllNodes } from '../store/selectors';
 import { take } from 'rxjs';
+import { removeConnection, removeNode } from '../store/actions';
 
 describe('MainCanvasComponent', () => {
   let component: MainCanvasComponent;
@@ -47,6 +48,8 @@ describe('MainCanvasComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(component.nodeIds.length).toEqual(mockNodes.length);
+    expect(component.connectionIds.length).toEqual(mockConnection.length);
   });
 
   it('should have 2 nodes in the nodeList from the store', () => {
@@ -131,5 +134,39 @@ describe('MainCanvasComponent', () => {
     component.onConnect(connectionEvent);
 
     expect(dispatchSpy).not.toHaveBeenCalled();
+  });
+
+  it('Should remove a connection if it is selected', () => {
+    component.selectedElement = '3';
+
+    component.removeElement();
+
+    expect(dispatchSpy).toHaveBeenCalledOnceWith(
+      removeConnection({id: '3'})
+    );
+  });
+
+  it('Should remove a node if it is selected', () => {
+    component.selectedElement = '1';
+
+    component.removeElement();
+
+    expect(dispatchSpy).toHaveBeenCalledOnceWith(
+      removeNode({id: '1'})
+    );
+  });
+
+  it('Should not remove anything if there is no selection', () => {
+    component.selectedElement = '';
+
+    component.removeElement();
+
+    expect(dispatchSpy).not.toHaveBeenCalled();
+  });
+
+  it('Should select the element with the id', () => {
+    component.selectElement('1');
+
+    expect(component.selectedElement).toEqual('1');
   });
 });

@@ -1,2 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
 @use "../node_modules/tailwindcss/" as tailwind;
+
+f-connection{
+  .f-connection-selection {
+    stroke-width: 20px;
+    fill: none;
+  }
+
+  &:hover {
+    .f-connection-selection {
+      stroke: rgba(142, 150, 170, 0.14);
+    }
+  }
+
+  .f-connection-path {
+    stroke-width: 2px;
+    fill: none;
+  }
+
+  &.f-selected {
+    .f-connection-path {
+      stroke: #5672cd;
+    }
+  }
+}

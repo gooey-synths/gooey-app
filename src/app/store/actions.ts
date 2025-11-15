@@ -6,7 +6,17 @@ export const addNode = createAction(
   props<{ node: Node }>()
 );
 
+export const removeNode = createAction(
+  '[Flowchart] Remove Node',
+  props<{ id: string }>()
+);
+
 export const addConnection = createAction(
   '[Flowchart] Add Connection between two nodes',
   props<{ connection: Connection }>()
+);
+
+export const removeConnection = createAction(
+  '[Flowchart] Remove Connection between two nodes',
+  props<{ id: string }>()
 );

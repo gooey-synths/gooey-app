@@ -1,14 +1,16 @@
-import { Component, inject } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import {
   FCreateNodeEvent,
   FCreateConnectionEvent,
   FFlowModule,
 } from '@foblex/flow';
-import { addNode, addConnection } from '../store/actions';
+import { addNode, removeNode, addConnection, removeConnection } from '../store/actions';
 import { select, Store } from '@ngrx/store';
 import { AsyncPipe } from '@angular/common';
-import { FlowchartState } from '../store/reducers';
+import { Connection, FlowchartState, Node } from '../store/reducers';
 import { selectAllNodes, selectAllConnections } from '../store/selectors';
+import { v4 as uuidv4 } from 'uuid';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-main-canvas',
@@ -17,15 +19,29 @@ import { selectAllNodes, selectAllConnections } from '../store/selectors';
   styleUrl: './main-canvas.component.scss'
 })
 export class MainCanvasComponent {
+  nodeList$: Observable<Node[]>;
+  connectionList$: Observable<Connection[]>;
 
-  readonly store = inject(Store<FlowchartState>)
+  nodeIds: string[] = [];
+  connectionIds: string[] = [];
 
-  nodeList$ = this.store.pipe(select(selectAllNodes));
-  connectionList$ = this.store.pipe(select(selectAllConnections));
+  constructor(private store: Store<FlowchartState>) {
+    this.nodeList$ = this.store.pipe(select(selectAllNodes));
+    this.connectionList$ = this.store.pipe(select(selectAllConnections));
+
+    this.nodeList$.subscribe(nodes =>
+      this.nodeIds = nodes.map(node => node.id)
+    );
+    this.connectionList$.subscribe(connections =>
+      this.connectionIds = connections.map(connection => connection.id)
+    );
+  }
+
+  selectedElement: string = '';
 
   onDrop(ev: FCreateNodeEvent) {
     const node = {
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       name: ev.data,
       x: ev.rect.x,
       y: ev.rect.y
@@ -43,10 +59,26 @@ export class MainCanvasComponent {
       return
     }
     const connection = {
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       start: ev.fOutputId,
       end: ev.fInputId
     }
     this.store.dispatch(addConnection({ connection }));
+  }
+
+  selectElement(id: string) {
+    this.selectedElement = id;
+  }
+
+  //TODO: could refactor some of this logic into the store
+  @HostListener('document:keydown.backspace', ['$event'])
+  removeElement() {
+    if(this.nodeIds.find(id => id === this.selectedElement)) {
+      this.store.dispatch(removeNode({ id: this.selectedElement }));
+    }
+    else if(this.connectionIds.find(id => id === this.selectedElement)) {
+      this.store.dispatch(removeConnection({ id: this.selectedElement }));
+    }
+    return
   }
 }
