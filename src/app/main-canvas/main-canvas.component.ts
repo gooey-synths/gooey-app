@@ -24,6 +24,7 @@ export class MainCanvasComponent {
 
   nodeIds: string[] = [];
   connectionIds: string[] = [];
+  selectedElement = '';
 
   constructor(private store: Store<FlowchartState>) {
     this.nodeList$ = this.store.pipe(select(selectAllNodes));
@@ -36,8 +37,6 @@ export class MainCanvasComponent {
       this.connectionIds = connections.map(connection => connection.id)
     );
   }
-
-  selectedElement: string = '';
 
   onDrop(ev: FCreateNodeEvent) {
     const node = {
