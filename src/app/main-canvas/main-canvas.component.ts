@@ -1,4 +1,5 @@
 import { Component, HostListener } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FCreateNodeEvent,
   FCreateConnectionEvent,
@@ -30,10 +31,10 @@ export class MainCanvasComponent {
     this.nodeList$ = this.store.pipe(select(selectAllNodes));
     this.connectionList$ = this.store.pipe(select(selectAllConnections));
 
-    this.nodeList$.subscribe(nodes =>
+    this.nodeList$.pipe(takeUntilDestroyed()).subscribe(nodes =>
       this.nodeIds = nodes.map(node => node.id)
     );
-    this.connectionList$.subscribe(connections =>
+    this.connectionList$.pipe(takeUntilDestroyed()).subscribe(connections =>
       this.connectionIds = connections.map(connection => connection.id)
     );
   }
