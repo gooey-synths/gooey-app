@@ -9,7 +9,7 @@ f-connection{
 
   &:hover {
     .f-connection-selection {
-      stroke: rgba(142, 150, 170, 0.14);
+      stroke: var(--color-neutral-100);
     }
   }
 
@@ -20,7 +20,7 @@ f-connection{
 
   &.f-selected {
     .f-connection-path {
-      stroke: #5672cd;
+      stroke: var(--color-sky-400);
     }
   }
 }

@@ -2,16 +2,16 @@ import { createReducer, on } from '@ngrx/store';
 import { addNode,removeNode, addConnection, removeConnection } from './actions';
 
 export interface Node {
-  x: number,
-  y: number,
-  name: string,
-  id: string
+  x: number;
+  y: number;
+  name: string;
+  id: string;
 }
 
 export interface Connection {
-  id: string
-  start: string
-  end: string
+  id: string;
+  start: string;
+  end: string;
 }
 export interface FlowchartState {
   nodes: Node[];
