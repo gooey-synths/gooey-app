@@ -1,7 +1,30 @@
 div[fNode] {
-    padding: 10px;
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: grab;
+
+  padding: 10px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: grab;
+}
+
+div[fNodeOutlet] {
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-radius: 50%;
+  border: 2px solid black;
+  display: block;
+}
+
+div[fNodeOutput], div[fNodeInput]{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 17px;
 }
