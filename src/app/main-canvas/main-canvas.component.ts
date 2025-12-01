@@ -29,9 +29,6 @@ export class MainCanvasComponent {
   connectionIds: string[] = [];
   selectedElement = '';
 
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
-
   constructor() {
     this.nodeList$ = this.store.pipe(select(selectAllNodes));
     this.connectionList$ = this.store.pipe(select(selectAllConnections));
