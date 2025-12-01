@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FCreateNodeEvent,
@@ -20,6 +20,8 @@ import { Observable } from 'rxjs';
   styleUrl: './main-canvas.component.scss'
 })
 export class MainCanvasComponent {
+  private store = inject<Store<FlowchartState>>(Store);
+
   nodeList$: Observable<Node[]>;
   connectionList$: Observable<Connection[]>;
 
@@ -27,7 +29,10 @@ export class MainCanvasComponent {
   connectionIds: string[] = [];
   selectedElement = '';
 
-  constructor(private store: Store<FlowchartState>) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.nodeList$ = this.store.pipe(select(selectAllNodes));
     this.connectionList$ = this.store.pipe(select(selectAllConnections));
 
