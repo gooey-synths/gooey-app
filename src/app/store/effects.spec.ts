@@ -92,6 +92,27 @@ describe('FlowchartEffects', () => {
       );
     });
 
+    it('should dispatch saveFlowchartSuccess with default name on successful save', (done) => {
+      const action = saveFlowchart({ filename: '' });
+      const completion = saveFlowchartSuccess();
+
+      actions$ = of(action);
+
+      effects.saveFlowchart$.subscribe({
+        next: (result) => {
+          expect(result).toEqual(completion);
+          done();
+        },
+        error: done.fail
+      });
+
+      // Verify the file service was called with the correct data
+      expect(fileService.saveFile).toHaveBeenCalledWith(
+        jasmine.any(Blob),
+        { suggestedName: 'flowchart.json' }
+      );
+    });
+
     it('should dispatch saveFlowchartFailure on error', (done) => {
       const error = new Error('Save failed');
       fileService.saveFile.and.returnValue(Promise.reject(error));
