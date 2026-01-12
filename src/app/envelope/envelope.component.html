@@ -1,0 +1,53 @@
+<div class="envelope-panel">
+  <div class="title">Envelope (ADSR)</div>
+
+  <label>Attack (s)</label>
+  <input
+    type="range"
+    min="0.001"
+    max="2"
+    step="0.001"
+    [ngModel]="node.config.attack"
+    (ngModelChange)="update('attack', $event)"
+  />
+
+  <label>Decay (s)</label>
+  <input
+    type="range"
+    min="0.001"
+    max="2"
+    step="0.001"
+    [ngModel]="node.config.decay"
+    (ngModelChange)="update('decay', $event)"
+  />
+
+  <label>Sustain</label>
+  <input
+    type="range"
+    min="0"
+    max="1"
+    step="0.01"
+    [ngModel]="node.config.sustain"
+    (ngModelChange)="update('sustain', $event)"
+  />
+
+  <label>Release (s)</label>
+  <input
+    type="range"
+    min="0.001"
+    max="5"
+    step="0.001"
+    [ngModel]="node.config.release"
+    (ngModelChange)="update('release', $event)"
+  />
+
+  <div class="jacks">
+
+    <div class="jack">
+      <span>Output</span>
+
+        <div fNodeOutlet class="socket output-socket"></div>
+        <div fNodeOutput [fOutputId]="node.config.outputs.out" fOutputConnectableSide="right" [fOutputMultiple]="true"></div>
+    </div>
+  </div>
+</div>

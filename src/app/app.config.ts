@@ -11,9 +11,9 @@ import { FileService } from './services/file.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }), 
-    provideRouter(routes), 
-    provideStore(), 
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    provideStore(),
     provideState({ name: 'flowchart', reducer: flowchartReducer }),
     provideEffects([FlowchartEffects]),
     FileService,

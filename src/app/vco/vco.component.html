@@ -1,0 +1,48 @@
+<div class="vco-panel">
+  <div class="title">VCO</div>
+
+  <!-- Waveform selector -->
+  <div class="section">
+    <label>Wave</label>
+    <select [(ngModel)]="waveform">
+      <option value="sine">Sine</option>
+      <option value="square">Square</option>
+      <option value="saw">Saw</option>
+    </select>
+  </div>
+
+  <!-- Knobs -->
+  <div class="knobs">
+    <div class="knob">
+      <label>Freq</label>
+      <input type="range" min="20" max="2000" [(ngModel)]="frequency">
+      <span>{{ frequency }} Hz</span>
+    </div>
+
+    <div class="knob">
+      <label>PW</label>
+      <input type="range" min="0.05" max="0.95" step="0.01" [(ngModel)]="pw">
+      <span>{{ pw }}</span>
+    </div>
+  </div>
+
+  <!-- CV Inputs -->
+  <div class="jacks">
+    <div class="jack">
+      <span>V/Oct</span>
+      <div class="socket" [class.connected]="vOctConnected"></div>
+    </div>
+
+    <div class="jack">
+      <span>PWM</span>
+      <div class="socket" [class.connected]="pwmConnected"></div>
+    </div>
+  </div>
+
+  <!-- Output -->
+  <div class="output">
+    <span>OUT</span>
+      <div fNodeOutlet class="socket output-socket"></div>
+      <div fNodeOutput [fOutputId]="node.config.outputs.out" fOutputConnectableSide="right" [fOutputMultiple]="true"></div>
+  </div>
+</div>

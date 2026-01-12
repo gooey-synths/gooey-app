@@ -1,0 +1,19 @@
+<div class="vca-panel">
+  <div class="title">VCA</div>
+
+  <div class="jacks">
+    <div class="jack">
+      <span>Audio Input</span>
+      <div class="socket">
+        <div fNodeInput [fInputId]="node.config.inputs.audio" fOutputConnectableSide="left" [fInputMultiple]="false"></div>
+      </div>
+    </div>
+
+    <div class="jack">
+      <span>CV Input</span>
+      <div class="socket">
+        <div fNodeInput [fInputId]="node.config.inputs.cv" fOutputConnectableSide="left" [fInputMultiple]="false"></div>
+      </div>
+    </div>
+  </div>
+</div>
