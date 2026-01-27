@@ -1,6 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 @use "../node_modules/tailwindcss/" as tailwind;
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 f-connection{
   .f-connection-selection {
     stroke-width: 20px;
@@ -22,5 +26,63 @@ f-connection{
     .f-connection-path {
       stroke: var(--color-sky-400);
     }
+  }
+}
+
+
+
+
+@layer components {
+
+  /* === Node shell === */
+  .node {
+    @apply w-64 rounded-xl bg-zinc-900 text-zinc-100
+           border border-zinc-700 shadow-lg
+           select-none;
+  }
+
+  .node-header {
+    @apply px-4 py-2 rounded-t-xl
+           bg-zinc-800 text-sm font-semibold
+           text-zinc-300 tracking-wide;
+  }
+
+  .node-body {
+    @apply p-4 space-y-4;
+  }
+
+  /* === Parameter row === */
+  .param {
+    @apply space-y-1;
+  }
+
+  .param-label {
+    @apply flex justify-between text-xs text-zinc-400;
+  }
+
+  .param-slider {
+    @apply w-full accent-indigo-400;
+  }
+
+  /* === Jacks === */
+  .jacks {
+    @apply pt-3 border-t border-zinc-700;
+  }
+
+  .jack {
+    @apply flex items-center justify-between;
+  }
+
+  .jack-label {
+    @apply text-xs text-zinc-400;
+  }
+
+  .socket {
+    @apply h-4 w-4 rounded-full
+           bg-zinc-800 border border-zinc-600;
+  }
+
+  .output-socket {
+    @apply bg-indigo-400 border-indigo-500;
   }
 }

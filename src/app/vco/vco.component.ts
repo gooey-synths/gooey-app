@@ -1,7 +1,10 @@
-import { Component, Input } from '@angular/core';
-import { NodeOf } from '../store/reducers';
+import { Component, Input, inject } from '@angular/core';
+import { NodeOf, FlowchartState } from '../store/reducers';
 import { FormsModule } from '@angular/forms';
 import { FFlowModule } from '@foblex/flow';
+
+import { updateNode } from '../store/actions';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-vco',
@@ -13,10 +16,11 @@ export class VcoComponent {
   @Input({ required: true }) node!: NodeOf<'vco'>;
   waveform: 'sine' | 'square' | 'saw' = 'sine';
 
-  frequency = 440;
-  pw = 0.5;
+  private store = inject<Store<FlowchartState>>(Store);
 
-  // These would normally be driven by CV
-  vOctConnected = false;
-  pwmConnected = false;
+  update<K extends keyof NodeOf<'vco'>['config']>(key: K, value: NodeOf<'vco'>['config'][K]) {
+    let copy = structuredClone(this.node);
+    copy.config[key] = value
+    this.store.dispatch(updateNode({ node: copy }));
+  }
 }

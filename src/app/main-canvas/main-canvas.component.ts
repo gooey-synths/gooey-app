@@ -32,14 +32,9 @@ export class MainCanvasComponent {
   connectionIds: string[] = [];
   selectedElement = '';
 
-  nodesA: SynthNode[] = [];
-
   constructor() {
     this.nodeList$ = this.store.pipe(select(selectAllNodes));
     this.connectionList$ = this.store.pipe(select(selectAllConnections));
-    this.nodeList$.pipe(takeUntilDestroyed()).subscribe(nodes =>
-      this.nodesA = nodes
-    );
 
     this.nodeList$.pipe(takeUntilDestroyed()).subscribe(nodes =>
       this.nodeIds = nodes.map(node => node.id)
@@ -71,7 +66,6 @@ export class MainCanvasComponent {
       }
     }
     this.store.dispatch(addNode({ node }));
-    console.log(this.nodesA);
   }
 
   onConnect(ev: FCreateConnectionEvent) {
