@@ -4,7 +4,6 @@ import { FFlowModule } from '@foblex/flow';
 import { NodeOf, FlowchartState } from '../store/reducers';
 import { updateNode } from '../store/actions';
 import { Store } from '@ngrx/store';
-import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-envelope',

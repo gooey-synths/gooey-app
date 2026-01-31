@@ -11,18 +11,4 @@ import { FFlowModule } from '@foblex/flow';
 })
 export class VcaComponent {
   @Input({ required: true }) node!: NodeOf<'vca'>;
-  // node: NodeOf<'vca'> = {
-  //   id: 'vca1',
-  //   type: 'vca',
-  //   position: { x: 100, y: 300 },
-  //   config: {
-  //     inputs: {}
-  //   }
-  // };
-  updateInput(key: string, value: string) {}
-
-  // updateInput(key: keyof VcaNode['config']['inputs'], value: string) {
-  //   this.node.config.inputs[key] = value;
-  //   // optionally emit change to store here
-  // }
 }

@@ -4,7 +4,7 @@ import { Observable, of, ReplaySubject, throwError } from 'rxjs';
 import { Action } from '@ngrx/store';
 import { FlowchartEffects } from './effects';
 import { saveFlowchart, saveFlowchartSuccess, saveFlowchartFailure } from './actions';
-import { Node, Connection, FlowchartState } from './reducers';
+import { SynthNode, NodeOf, Connection, FlowchartState } from './reducers';
 import { FileService } from '../services/file.service';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { selectAllConnections, selectAllNodes } from './selectors';
@@ -16,9 +16,38 @@ describe('FlowchartEffects', () => {
   let store: MockStore<FlowchartState>;
   let fileService: jasmine.SpyObj<FileService>;
 
-  const mockNodes: Node[] = [
-    { id: '1', x: 100, y: 100, name: 'Node 1' },
-    { id: '2', x: 200, y: 200, name: 'Node 2' }
+  const mockNodes: SynthNode[] = [
+    {
+      id: 'vco-1',
+      type: 'vco',
+      position: { x: 0, y: 0 },
+      config: {
+        waveform: 'sine',
+        frequency: 440,
+        pw: 0.5,
+        inputs: {
+          cv: 'cv-id',
+          pwm: 'pwm-id',
+        },
+        outputs: {
+          out: 'out-id',
+        },
+      },
+    },
+    {
+      id: 'env-1',
+      type: 'envelope',
+      position: { x: 0, y: 0 },
+      config: {
+        attack: 0.01,
+        decay: 0.1,
+        sustain: 0.7,
+        release: 0.2,
+        outputs: {
+          out: 'out-id',
+        },
+      },
+    }
   ];
 
   const mockConnections: Connection[] = [

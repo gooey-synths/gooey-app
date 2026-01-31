@@ -1,5 +1,6 @@
 import { flowchartReducer, initialState } from './reducers';
 import { addConnection, removeConnection, addNode, removeNode } from './actions';
+import { NodeOf } from '../store/reducers';
 
 describe('Flowchart Reducer', () => {
   beforeEach(() => {
@@ -13,7 +14,23 @@ describe('Flowchart Reducer', () => {
   });
 
   it('should add an element on addNode action', () => {
-    const node = { id: '1234', name: 'Node 1', x: 100, y: 200 };
+    const node: NodeOf<'vco'> = {
+      id: 'vco-1',
+      type: 'vco',
+      position: { x: 0, y: 0 },
+      config: {
+        waveform: 'sine',
+        frequency: 440,
+        pw: 0.5,
+        inputs: {
+          cv: 'cv-id',
+          pwm: 'pwm-id',
+        },
+        outputs: {
+          out: 'out-id',
+        },
+      },
+    };
     const action = addNode({ node });
     const state = flowchartReducer(initialState, action);
 
@@ -22,7 +39,23 @@ describe('Flowchart Reducer', () => {
   });
 
   it('should remove a node on removeNode action', () => {
-    const node = { id: '1234', name: 'test node', x: 1, y: 2 };
+    const node: NodeOf<'vco'> = {
+      id: 'vco-1',
+      type: 'vco',
+      position: { x: 0, y: 0 },
+      config: {
+        waveform: 'sine',
+        frequency: 440,
+        pw: 0.5,
+        inputs: {
+          cv: 'cv-id',
+          pwm: 'pwm-id',
+        },
+        outputs: {
+          out: 'out-id',
+        },
+      },
+    };
     initialState.nodes.push(node);
     const action = removeNode({ id: node.id });
 
@@ -51,8 +84,37 @@ describe('Flowchart Reducer', () => {
   });
 
   it('should add multiple elements cumulatively', () => {
-    const node1 = { id: '1234', name: 'Node 1', x: 100, y: 200 };
-    const node2 = { id: '1234', name: 'Node 1', x: 100, y: 200 };
+    const node1: NodeOf<'vco'> = {
+      id: 'vco-1',
+      type: 'vco',
+      position: { x: 0, y: 0 },
+      config: {
+        waveform: 'sine',
+        frequency: 440,
+        pw: 0.5,
+        inputs: {
+          cv: 'cv-id',
+          pwm: 'pwm-id',
+        },
+        outputs: {
+          out: 'out-id',
+        },
+      },
+    };
+    const node2: NodeOf<'envelope'> = {
+      id: 'env-1',
+      type: 'envelope',
+      position: { x: 0, y: 0 },
+      config: {
+        attack: 0.01,
+        decay: 0.1,
+        sustain: 0.7,
+        release: 0.2,
+        outputs: {
+          out: 'out-id',
+        },
+      },
+    };
 
     const state1 = flowchartReducer(initialState, addNode({ node: node1 }));
     const state2 = flowchartReducer(state1, addNode({ node: node2 }));

@@ -1,36 +1,63 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { saveFlowchart } from './store/actions';
+import { FlowchartState } from './store/reducers';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Component } from '@angular/core';
+
+@Component({ selector: 'app-main-canvas', template: '' })
+class MainCanvasStub {}
+
+@Component({ selector: 'app-node-selector', template: '' })
+class NodeSelectorStub {}
 
 describe('AppComponent', () => {
-  let fixture: ComponentFixture<AppComponent>;
   let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+  let store: MockStore;
+  let dispatchSpy: jasmine.Spy;
+  const initialState: FlowchartState = {
+    nodes: [],
+    connections: [],
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent],
+      imports: [RouterTestingModule, AppComponent, MainCanvasStub, NodeSelectorStub],
       providers: [
-        provideMockStore(),
+        provideMockStore({ initialState }),
       ],
-      schemas: [NO_ERRORS_SCHEMA],
-    }).compileComponents();
+    }).overrideComponent(AppComponent, {
+      set: {
+        imports: [RouterTestingModule, MainCanvasStub, NodeSelectorStub],
+      },
+    })
+    .compileComponents();
 
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
+    store = TestBed.inject(MockStore);
+    dispatchSpy = spyOn(store, 'dispatch');
     fixture.detectChanges();
   });
 
-  it('should create the app', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it(`should have the 'gooey-app' title`, () => {
-    expect(component.title).toEqual('gooey-app');
+  it('should have correct title', () => {
+    expect(component.title).toBe('gooey-app');
   });
 
-  it('should render title', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Gooey App');
+  it('onSave() should dispatch saveFlowchart action', () => {
+    component.onSave();
+
+    expect(dispatchSpy).toHaveBeenCalledTimes(1);
+
+    const action = dispatchSpy.calls.mostRecent().args[0];
+    expect(action).toEqual(
+      saveFlowchart({ filename: 'flowchart.json' })
+    );
   });
 });

@@ -4,7 +4,6 @@ import { SidebarComponent } from './node-selector/node-selector.component';
 import { MainCanvasComponent } from "./main-canvas/main-canvas.component";
 import { Store } from '@ngrx/store';
 import { saveFlowchart } from './store/actions';
-import { FFlowModule } from '@foblex/flow';
 
 @Component({
   selector: 'app-root',

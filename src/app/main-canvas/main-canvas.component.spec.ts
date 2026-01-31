@@ -2,21 +2,59 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { MainCanvasComponent } from './main-canvas.component';
 import { selectAllConnections, selectAllNodes } from '../store/selectors';
+import { SynthNode } from '../store/reducers';
 import { take } from 'rxjs';
 import { removeConnection, removeNode } from '../store/actions';
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-main-canvas',
+  standalone: true,
+  template: '',
+})
+class MainCanvasStub {}
 
 describe('MainCanvasComponent', () => {
   let component: MainCanvasComponent;
   let fixture: ComponentFixture<MainCanvasComponent>;
   let store: MockStore;
   let dispatchSpy: jasmine.Spy;
-  const mockNodes = [
-    { id: '1', name: 'Node 1', x: 100, y: 100 },
-    { id: '2', name: 'Node 2c', x: 200, y: 200 },
+  const mockNodes: SynthNode[] = [
+    {
+      id: 'vco-1',
+      type: 'vco',
+      position: { x: 0, y: 0 },
+      config: {
+        waveform: 'sine',
+        frequency: 440,
+        pw: 0.5,
+        inputs: {
+          cv: 'cv-id',
+          pwm: 'pwm-id',
+        },
+        outputs: {
+          out: 'vout-id',
+        },
+      },
+    },
+    {
+      id: 'env-1',
+      type: 'envelope',
+      position: { x: 0, y: 0 },
+      config: {
+        attack: 0.01,
+        decay: 0.1,
+        sustain: 0.7,
+        release: 0.2,
+        outputs: {
+          out: 'out-id',
+        },
+      },
+    }
   ];
 
   const mockConnection = [
-    { id: '3', start: '1', end: '2' },
+    { id: '3', start: 'out-id', end: 'cv-id' },
   ];
 
   beforeEach(async () => {
@@ -36,7 +74,8 @@ describe('MainCanvasComponent', () => {
           ],
         }),
       ]
-    })
+    }).
+    overrideComponent(MainCanvasComponent, { set: {template: ''}})
     .compileComponents();
 
     store = TestBed.inject(MockStore);
@@ -70,7 +109,10 @@ describe('MainCanvasComponent', () => {
 
   it('Dropping a node on the canvas should add one to the list', () => {
     const dropEvent = {
-      data: 'Test',
+      data: {
+        type: 'test',
+        config: 'test'
+      },
       rect: {
         x: 100,
         y: 100,
@@ -147,12 +189,12 @@ describe('MainCanvasComponent', () => {
   });
 
   it('Should remove a node if it is selected', () => {
-    component.selectedElement = '1';
+    component.selectedElement = 'vco-1';
 
     component.removeElement();
 
     expect(dispatchSpy).toHaveBeenCalledOnceWith(
-      removeNode({id: '1'})
+      removeNode({id: 'vco-1'})
     );
   });
 
@@ -165,8 +207,8 @@ describe('MainCanvasComponent', () => {
   });
 
   it('Should select the element with the id', () => {
-    component.selectElement('1');
+    component.selectElement('vco-1');
 
-    expect(component.selectedElement).toEqual('1');
+    expect(component.selectedElement).toEqual('vco-1');
   });
 });

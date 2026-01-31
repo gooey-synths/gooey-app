@@ -47,13 +47,6 @@ export type NodeType = keyof NodeConfigMap;
 
 export type NodeOf<T extends NodeType> = NodeBase<T>;
 
-export interface Node {
-  x: number;
-  y: number;
-  name: string;
-  id: string;
-}
-
 export interface Connection {
   id: string;
   start: string;

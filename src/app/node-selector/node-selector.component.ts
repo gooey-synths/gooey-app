@@ -5,7 +5,7 @@ import { NodeOf } from '../store/reducers';
 
 @Component({
   selector: 'app-node-selector',
-  imports: [FFlowModule, FExternalItemDirective, VcoComponent],
+  imports: [FFlowModule, FExternalItemDirective],
   templateUrl: './node-selector.component.html',
   styleUrl: './node-selector.component.scss'
 })
