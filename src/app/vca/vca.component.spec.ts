@@ -6,6 +6,7 @@ import { NodeOf, FlowchartState } from '../store/reducers';
 describe('VcaComponent', () => {
   let component: VcaComponent;
   let fixture: ComponentFixture<VcaComponent>;
+  let store: MockStore;
 
   const initialNode: NodeOf<'vca'> = {
     id: 'vca-1',

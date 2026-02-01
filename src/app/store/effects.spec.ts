@@ -13,6 +13,7 @@ describe('FlowchartEffects', () => {
   let actions$ = new Observable<Action>();
   let effects: FlowchartEffects;
   let fileService: jasmine.SpyObj<FileService>;
+  let store: MockStore;
 
   const mockNodes: SynthNode[] = [
     {
@@ -75,11 +76,11 @@ describe('FlowchartEffects', () => {
           selectors: [
             {
               selector: selectAllNodes,
-              value: mockState.mockNodes,
+              value: mockState.nodes,
             },
             {
               selector: selectAllConnections,
-              value: mockState.mockConnections,
+              value: mockState.connections,
             },
           ],
         }),
