@@ -1,12 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { VcaComponent } from './vca.component';
 import { NodeOf, FlowchartState } from '../store/reducers';
 
 describe('VcaComponent', () => {
   let component: VcaComponent;
   let fixture: ComponentFixture<VcaComponent>;
-  let store: MockStore;
 
   const initialNode: NodeOf<'vca'> = {
     id: 'vca-1',
@@ -34,7 +33,6 @@ describe('VcaComponent', () => {
 
     fixture = TestBed.createComponent(VcaComponent);
     component = fixture.componentInstance;
-    store = TestBed.inject(MockStore);
 
     component.node = structuredClone(initialNode);
     fixture.detectChanges();

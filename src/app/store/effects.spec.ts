@@ -6,14 +6,13 @@ import { FlowchartEffects } from './effects';
 import { saveFlowchart, saveFlowchartSuccess, saveFlowchartFailure } from './actions';
 import { SynthNode, Connection, FlowchartState } from './reducers';
 import { FileService } from '../services/file.service';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { selectAllConnections, selectAllNodes } from './selectors';
 
 describe('FlowchartEffects', () => {
   let actions$ = new Observable<Action>();
   let effects: FlowchartEffects;
   let fileService: jasmine.SpyObj<FileService>;
-  let store: MockStore;
 
   const mockNodes: SynthNode[] = [
     {
@@ -89,7 +88,6 @@ describe('FlowchartEffects', () => {
       ]
     });
 
-    store = TestBed.inject(MockStore);
     effects = TestBed.inject(FlowchartEffects);
     fileService = TestBed.inject(FileService) as jasmine.SpyObj<FileService>;
   });
