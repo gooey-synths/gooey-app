@@ -2,20 +2,16 @@ import { Injectable } from '@angular/core';
 
 export interface SaveOptions {
   suggestedName?: string;
-  types?: Array<{
+  types?: {
     description: string;
-    accept: {
-      [mimeType: string]: string[];
-    };
-  }>;
+    accept: Record<string, string[]>;
+  }[];
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class FileService {
-  constructor() {}
-
   async saveFile(blob: Blob, options: SaveOptions = {}): Promise<FileSystemFileHandle | null> {
     try {
       // Check if the File System Access API is supported
@@ -33,6 +29,7 @@ export class FileService {
         types: options.types || defaultTypes,
       };
 
+      // eslint-disable-next-line
       const fileHandle = await (window as any).showSaveFilePicker(fileOptions);
       const writable = await fileHandle.createWritable();
       await writable.write(blob);

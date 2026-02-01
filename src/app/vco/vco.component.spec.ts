@@ -2,9 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { VcoComponent } from './vco.component';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { updateNode } from '../store/actions';
-import { NodeOf, FlowchartState, SynthNode } from '../store/reducers';
-import { FormsModule } from '@angular/forms';
-import { FFlowModule } from '@foblex/flow';
+import { NodeOf, FlowchartState } from '../store/reducers';
 
 describe('VcoComponent', () => {
   let component: VcoComponent;

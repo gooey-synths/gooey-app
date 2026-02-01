@@ -3,8 +3,6 @@ import { EnvelopeComponent } from './envelope.component';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { updateNode } from '../store/actions';
 import { NodeOf, FlowchartState } from '../store/reducers';
-import { FormsModule } from '@angular/forms';
-import { FFlowModule } from '@foblex/flow';
 
 describe('EnvelopeComponent', () => {
   let component: EnvelopeComponent;

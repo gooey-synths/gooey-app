@@ -1,15 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { FormsModule } from '@angular/forms';
 import { VcaComponent } from './vca.component';
 import { NodeOf, FlowchartState } from '../store/reducers';
-import { FFlowModule } from '@foblex/flow';
 
 describe('VcaComponent', () => {
   let component: VcaComponent;
   let fixture: ComponentFixture<VcaComponent>;
-
-  let store: MockStore<FlowchartState>;
 
   const initialNode: NodeOf<'vca'> = {
     id: 'vca-1',

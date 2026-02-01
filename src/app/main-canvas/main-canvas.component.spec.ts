@@ -5,14 +5,6 @@ import { selectAllConnections, selectAllNodes } from '../store/selectors';
 import { SynthNode } from '../store/reducers';
 import { take } from 'rxjs';
 import { removeConnection, removeNode } from '../store/actions';
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-main-canvas',
-  standalone: true,
-  template: '',
-})
-class MainCanvasStub {}
 
 describe('MainCanvasComponent', () => {
   let component: MainCanvasComponent;

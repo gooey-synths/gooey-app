@@ -1,19 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { Observable, of, ReplaySubject, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Action } from '@ngrx/store';
 import { FlowchartEffects } from './effects';
 import { saveFlowchart, saveFlowchartSuccess, saveFlowchartFailure } from './actions';
-import { SynthNode, NodeOf, Connection, FlowchartState } from './reducers';
+import { SynthNode, Connection, FlowchartState } from './reducers';
 import { FileService } from '../services/file.service';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { selectAllConnections, selectAllNodes } from './selectors';
-import { Actions } from '@ngrx/effects';
 
 describe('FlowchartEffects', () => {
   let actions$ = new Observable<Action>();
   let effects: FlowchartEffects;
-  let store: MockStore<FlowchartState>;
   let fileService: jasmine.SpyObj<FileService>;
 
   const mockNodes: SynthNode[] = [
@@ -77,11 +75,11 @@ describe('FlowchartEffects', () => {
           selectors: [
             {
               selector: selectAllNodes,
-              value: mockNodes,
+              value: mockState.mockNodes,
             },
             {
               selector: selectAllConnections,
-              value: mockConnections,
+              value: mockState.mockConnections,
             },
           ],
         }),

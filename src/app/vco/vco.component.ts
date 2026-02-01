@@ -19,7 +19,7 @@ export class VcoComponent {
   private store = inject<Store<FlowchartState>>(Store);
 
   update<K extends keyof NodeOf<'vco'>['config']>(key: K, value: NodeOf<'vco'>['config'][K]) {
-    let copy = structuredClone(this.node);
+    const copy = structuredClone(this.node);
     copy.config[key] = value
     this.store.dispatch(updateNode({ node: copy }));
   }

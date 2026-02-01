@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { SynthNode, Connection, FlowchartState } from './reducers';
+import { SynthNode, Connection } from './reducers';
 
 export const addNode = createAction(
   '[Flowchart] Add Node',
@@ -37,5 +37,5 @@ export const saveFlowchartSuccess = createAction(
 
 export const saveFlowchartFailure = createAction(
   '[Flowchart] Save Flowchart Failure',
-  props<{ error: any }>()
+  props<{ error: Error }>()
 );

@@ -45,7 +45,7 @@ export class MainCanvasComponent {
   }
 
   onDrop(ev: FCreateNodeEvent) {
-    let node = {
+    const node = {
       id: uuidv4(),
       position: {
         x: ev.rect.x,

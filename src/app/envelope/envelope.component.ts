@@ -17,7 +17,7 @@ export class EnvelopeComponent {
   private store = inject<Store<FlowchartState>>(Store);
 
   update<K extends keyof NodeOf<'envelope'>['config']>(key: K, value: NodeOf<'envelope'>['config'][K]) {
-    let copy = structuredClone(this.node);
+    const copy = structuredClone(this.node);
     copy.config[key] = value
     this.store.dispatch(updateNode({ node: copy }));
   }

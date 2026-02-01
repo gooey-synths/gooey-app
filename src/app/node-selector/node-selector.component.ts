@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FExternalItemDirective, FFlowModule } from '@foblex/flow';
-import { VcoComponent } from '../vco/vco.component';
 import { NodeOf } from '../store/reducers';
 
 @Component({
@@ -30,7 +29,7 @@ export class SidebarComponent {
   envelope: NodeOf<'envelope'> = {
     id: 'env1',
     type: 'envelope',
-    position: { x: 100, y: 300 },
+    position: { x: 0, y: 0 },
     config: {
       attack: 0.01,
       decay: 0.1,
@@ -44,7 +43,7 @@ export class SidebarComponent {
   vca: NodeOf<'vca'> = {
     id: 'vca1',
     type: 'vca',
-    position: { x: 100, y: 300 },
+    position: { x: 0, y: 0 },
     config: {
       inputs: {
         audio: 'audio-1',

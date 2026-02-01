@@ -6,7 +6,7 @@
 
   <!-- Attack -->
   <div class="flex items-center justify-between mb-1">
-    <label class="text-xs font-medium text-gray-600">Attack (s)</label>
+    <label for="attack-range" class="text-xs font-medium text-gray-600">Attack (s)</label>
     <span class="text-xs tabular-nums">{{ node.config.attack }}</span>
   </div>
   <input
@@ -17,14 +17,16 @@
     class="w-full mb-2 accent-blue-500"
     [ngModel]="node.config.attack"
     (ngModelChange)="update('attack', $event)"
+    id="attack-range"
   />
 
   <!-- Decay -->
   <div class="flex items-center justify-between mb-1">
-    <label class="text-xs font-medium text-gray-600">Decay (s)</label>
+    <label for="decay-range" class="text-xs font-medium text-gray-600">Decay (s)</label>
     <span class="text-xs tabular-nums">{{ node.config.decay }}</span>
   </div>
   <input
+    id="decay-range"
     type="range"
     min="0.001"
     max="2"
@@ -36,10 +38,11 @@
 
   <!-- Sustain -->
   <div class="flex items-center justify-between mb-1">
-    <label class="text-xs font-medium text-gray-600">Sustain</label>
+    <label for="sustain-range" class="text-xs font-medium text-gray-600">Sustain</label>
     <span class="text-xs tabular-nums">{{ node.config.sustain }}</span>
   </div>
   <input
+    id="sustain-range"
     type="range"
     min="0"
     max="1"
@@ -51,10 +54,11 @@
 
   <!-- Release -->
   <div class="flex items-center justify-between mb-1">
-    <label class="text-xs font-medium text-gray-600">Release (s)</label>
+    <label for="id-range" class="text-xs font-medium text-gray-600">Release (s)</label>
     <span class="text-xs tabular-nums">{{ node.config.release }}</span>
   </div>
   <input
+    id="id-range"
     type="range"
     min="0.001"
     max="5"
