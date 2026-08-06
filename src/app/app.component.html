@@ -3,17 +3,22 @@
   <header class="bg-gray-800 text-white p-4 flex items-center justify-between">
     <h1 class="text-lg font-bold">Gooey App</h1>
     <div class="flex justify-between">
-      <button class="bg-blue-500 hover:bg-blue-600 px-4 py-2 mx-2 rounded">Save</button>
-      <button class="bg-blue-500 hover:bg-blue-600 px-4 py-2 mx-2 rounded">Load</button>
+      <button (click)="onSave()" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 mx-2 rounded">
+        Save
+      </button>
+      <button class="bg-blue-500 hover:bg-blue-600 px-4 py-2 mx-2 rounded">
+        Load
+      </button>
     </div>
   </header>
 
   <div class="flex flex-1 overflow-hidden">
     <aside class="bg-gray-100 w-64 p-4 overflow-y-auto border-r border-gray-300">
-        <app-node-selector></app-node-selector>
+      <app-node-selector></app-node-selector>
     </aside>
 
     <main class="flex-1 bg-white relative overflow-hidden">
+      <router-outlet></router-outlet>
       <app-main-canvas></app-main-canvas>
     </main>
   </div>

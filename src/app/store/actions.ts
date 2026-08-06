@@ -1,9 +1,14 @@
 import { createAction, props } from '@ngrx/store';
-import { Node, Connection } from './reducers';
+import { SynthNode, Connection } from './reducers';
 
 export const addNode = createAction(
   '[Flowchart] Add Node',
-  props<{ node: Node }>()
+  props<{ node: SynthNode }>()
+);
+
+export const updateNode = createAction(
+  '[Flowchart] Update Node',
+  props<{ node: SynthNode }>()
 );
 
 export const removeNode = createAction(
@@ -19,4 +24,18 @@ export const addConnection = createAction(
 export const removeConnection = createAction(
   '[Flowchart] Remove Connection between two nodes',
   props<{ id: string }>()
+);
+
+export const saveFlowchart = createAction(
+  '[Flowchart] Save Flowchart',
+  props<{ filename?: string }>()
+);
+
+export const saveFlowchartSuccess = createAction(
+  '[Flowchart] Save Flowchart Success'
+);
+
+export const saveFlowchartFailure = createAction(
+  '[Flowchart] Save Flowchart Failure',
+  props<{ error: Error }>()
 );

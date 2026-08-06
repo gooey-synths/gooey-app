@@ -8,21 +8,24 @@ import {
 import { addNode, removeNode, addConnection, removeConnection } from '../store/actions';
 import { select, Store } from '@ngrx/store';
 import { AsyncPipe } from '@angular/common';
-import { Connection, FlowchartState, Node } from '../store/reducers';
+import { Connection, FlowchartState, SynthNode } from '../store/reducers';
 import { selectAllNodes, selectAllConnections } from '../store/selectors';
 import { v4 as uuidv4 } from 'uuid';
 import { Observable } from 'rxjs';
+import { VcoComponent } from '../vco/vco.component';
+import { EnvelopeComponent } from '../envelope/envelope.component';
+import { VcaComponent } from '../vca/vca.component';
 
 @Component({
   selector: 'app-main-canvas',
-  imports: [FFlowModule, AsyncPipe],
+  imports: [FFlowModule, AsyncPipe, VcoComponent, EnvelopeComponent, VcaComponent],
   templateUrl: './main-canvas.component.html',
   styleUrl: './main-canvas.component.scss'
 })
 export class MainCanvasComponent {
   private store = inject<Store<FlowchartState>>(Store);
 
-  nodeList$: Observable<Node[]>;
+  nodeList$: Observable<SynthNode[]>;
   connectionList$: Observable<Connection[]>;
 
   nodeIds: string[] = [];
@@ -44,9 +47,23 @@ export class MainCanvasComponent {
   onDrop(ev: FCreateNodeEvent) {
     const node = {
       id: uuidv4(),
-      name: ev.data,
-      x: ev.rect.x,
-      y: ev.rect.y
+      position: {
+        x: ev.rect.x,
+        y: ev.rect.y,
+      },
+      type: ev.data.type,
+      config: ev.data.config
+    }
+    if (node.config.inputs) {
+      for (const key of Object.keys(ev.data.config.inputs)) {
+        node.config.inputs[key] = uuidv4();
+      }
+    }
+
+    if (node.config.outputs) {
+      for (const key of Object.keys(node.config.outputs)) {
+        node.config.outputs[key] = uuidv4();
+      }
     }
     this.store.dispatch(addNode({ node }));
   }
