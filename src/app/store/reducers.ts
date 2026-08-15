@@ -15,8 +15,6 @@ export interface SynthNode {
   config: NodeConfig;
 }
 
-export type NodeType = string;
-
 export interface Connection {
   id: string;
   start: string;

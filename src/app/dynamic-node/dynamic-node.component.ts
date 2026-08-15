@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { FlowchartState, SynthNode } from '../store/reducers';
 import { updateNode } from '../store/actions';
 import { NodeDefinitionService } from '../nodes/node-definition.service';
-import { ControlDefinition, NodeDefinition, RangeControl, SelectControl } from '../nodes/node-definition';
+import { NodeDefinition } from '../nodes/node-definition';
 
 @Component({
   selector: 'app-dynamic-node',
@@ -21,14 +21,6 @@ export class DynamicNodeComponent {
 
   get definition(): NodeDefinition | undefined {
     return this.definitions.getDefinition(this.node.type);
-  }
-
-  asRange(control: ControlDefinition): RangeControl | null {
-    return control.type === 'range' ? control : null;
-  }
-
-  asSelect(control: ControlDefinition): SelectControl | null {
-    return control.type === 'select' ? control : null;
   }
 
   update(key: string, value: unknown) {

@@ -107,6 +107,84 @@ describe('validateNodes', () => {
     expect(errors[0].message).toContain('max');
   });
 
+  it('should report a duplicate output port key within a node', () => {
+    const file: NodesFile = {
+      nodes: [
+        {
+          type: 'vco',
+          label: 'VCO',
+          outputs: [
+            { key: 'out', label: 'OUT' },
+            { key: 'out', label: 'OUT 2' },
+          ],
+        },
+      ],
+    };
+
+    const errors = validateNodes(file);
+    expect(errors.length).toBe(1);
+    expect(errors[0].node).toBe('vco');
+    expect(errors[0].message).toContain('output');
+  });
+
+  it('should report a range control missing min', () => {
+    const file: NodesFile = {
+      nodes: [
+        {
+          type: 'vco',
+          label: 'VCO',
+          controls: [{ type: 'range', key: 'frequency', label: 'Freq', default: 440, max: 2000, step: 1 } as never],
+        },
+      ],
+    };
+
+    const errors = validateNodes(file);
+    expect(errors.length).toBe(1);
+    expect(errors[0].message).toContain('min');
+  });
+
+  it('should report a range control missing step', () => {
+    const file: NodesFile = {
+      nodes: [
+        {
+          type: 'vco',
+          label: 'VCO',
+          controls: [{ type: 'range', key: 'frequency', label: 'Freq', default: 440, min: 20, max: 2000 } as never],
+        },
+      ],
+    };
+
+    const errors = validateNodes(file);
+    expect(errors.length).toBe(1);
+    expect(errors[0].message).toContain('step');
+  });
+
+  it('should report a select control without options', () => {
+    const file: NodesFile = {
+      nodes: [
+        {
+          type: 'vco',
+          label: 'VCO',
+          controls: [{ type: 'select', key: 'waveform', label: 'Wave', default: 'sine', options: [] }],
+        },
+      ],
+    };
+
+    const errors = validateNodes(file);
+    expect(errors.length).toBe(1);
+    expect(errors[0].message).toContain('options');
+  });
+
+  it('should report a node missing a type', () => {
+    const file: NodesFile = {
+      nodes: [{ label: 'VCO' } as never],
+    };
+
+    const errors = validateNodes(file);
+    expect(errors.length).toBe(1);
+    expect(errors[0].message).toContain('type');
+  });
+
   it('should report a node missing a label', () => {
     const file: NodesFile = {
       nodes: [{ type: 'vco' } as never],
