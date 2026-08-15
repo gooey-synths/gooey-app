@@ -12,11 +12,11 @@
       @switch (control.type) {
         @case ('range') {
           <div class="flex items-center justify-between mb-1">
-            <label [for]="'control-' + control.key" class="text-xs font-medium text-gray-600">{{ control.label }}</label>
+            <label [for]="'control-' + node.id + '-' + control.key" class="text-xs font-medium text-gray-600">{{ control.label }}</label>
             <span class="text-xs tabular-nums">{{ node.config[control.key] }}{{ control.unit ? ' ' + control.unit : '' }}</span>
           </div>
           <input
-            [id]="'control-' + control.key"
+            [id]="'control-' + node.id + '-' + control.key"
             type="range"
             [min]="control.min"
             [max]="control.max"
@@ -28,9 +28,9 @@
         }
         @case ('select') {
           <div class="mb-3">
-            <label [for]="'control-' + control.key" class="block text-xs font-medium text-gray-600 mb-1">{{ control.label }}</label>
+            <label [for]="'control-' + node.id + '-' + control.key" class="block text-xs font-medium text-gray-600 mb-1">{{ control.label }}</label>
             <select
-              [id]="'control-' + control.key"
+              [id]="'control-' + node.id + '-' + control.key"
               [ngModel]="node.config[control.key]"
               (ngModelChange)="update(control.key, $event)"
               class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
