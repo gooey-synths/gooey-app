@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { NodeOf } from '../store/reducers';
+import { SynthNode } from '../store/reducers';
 import { FormsModule } from '@angular/forms';
 import { FFlowModule } from '@foblex/flow';
 
@@ -10,5 +10,5 @@ import { FFlowModule } from '@foblex/flow';
   styleUrls: ['./vca.component.scss']
 })
 export class VcaComponent {
-  @Input({ required: true }) node!: NodeOf<'vca'>;
+  @Input({ required: true }) node!: SynthNode;
 }

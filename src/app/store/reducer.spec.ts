@@ -1,6 +1,6 @@
 import { flowchartReducer, initialState } from './reducers';
 import { addConnection, removeConnection, addNode, removeNode } from './actions';
-import { NodeOf } from '../store/reducers';
+import { SynthNode } from '../store/reducers';
 
 describe('Flowchart Reducer', () => {
   beforeEach(() => {
@@ -14,7 +14,7 @@ describe('Flowchart Reducer', () => {
   });
 
   it('should add an element on addNode action', () => {
-    const node: NodeOf<'vco'> = {
+    const node: SynthNode = {
       id: 'vco-1',
       type: 'vco',
       position: { x: 0, y: 0 },
@@ -39,7 +39,7 @@ describe('Flowchart Reducer', () => {
   });
 
   it('should remove a node on removeNode action', () => {
-    const node: NodeOf<'vco'> = {
+    const node: SynthNode = {
       id: 'vco-1',
       type: 'vco',
       position: { x: 0, y: 0 },
@@ -84,7 +84,7 @@ describe('Flowchart Reducer', () => {
   });
 
   it('should add multiple elements cumulatively', () => {
-    const node1: NodeOf<'vco'> = {
+    const node1: SynthNode = {
       id: 'vco-1',
       type: 'vco',
       position: { x: 0, y: 0 },
@@ -101,7 +101,7 @@ describe('Flowchart Reducer', () => {
         },
       },
     };
-    const node2: NodeOf<'envelope'> = {
+    const node2: SynthNode = {
       id: 'env-1',
       type: 'envelope',
       position: { x: 0, y: 0 },
@@ -121,5 +121,20 @@ describe('Flowchart Reducer', () => {
 
     expect(state2.nodes.length).toBe(2);
     expect(state2.nodes).toEqual([node1, node2]);
+  });
+
+  it('should add a node of a custom JSON-driven type', () => {
+    const node: SynthNode = {
+      id: 'filter-1',
+      type: 'filter',
+      position: { x: 0, y: 0 },
+      config: { cutoff: 1000, resonance: 0.7 },
+    };
+    const action = addNode({ node });
+    const state = flowchartReducer(initialState, action);
+
+    expect(state.nodes.length).toBe(1);
+    expect(state.nodes[0].type).toBe('filter');
+    expect(state.nodes[0].config['cutoff']).toBe(1000);
   });
 });

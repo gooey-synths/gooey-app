@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FExternalItemDirective, FFlowModule } from '@foblex/flow';
-import { NodeOf } from '../store/reducers';
+import { SynthNode } from '../store/reducers';
 
 @Component({
   selector: 'app-node-selector',
@@ -9,7 +9,7 @@ import { NodeOf } from '../store/reducers';
   styleUrl: './node-selector.component.scss'
 })
 export class SidebarComponent {
-  vco: NodeOf<'vco'> = {
+  vco: SynthNode = {
     id: 'vco-1',
     type: 'vco',
     position: { x: 0, y: 0 },
@@ -26,7 +26,7 @@ export class SidebarComponent {
       }
     }
   };
-  envelope: NodeOf<'envelope'> = {
+  envelope: SynthNode = {
     id: 'env1',
     type: 'envelope',
     position: { x: 0, y: 0 },
@@ -40,7 +40,7 @@ export class SidebarComponent {
       }
     }
   };
-  vca: NodeOf<'vca'> = {
+  vca: SynthNode = {
     id: 'vca1',
     type: 'vca',
     position: { x: 0, y: 0 },

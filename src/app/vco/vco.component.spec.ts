@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { VcoComponent } from './vco.component';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { updateNode } from '../store/actions';
-import { NodeOf, FlowchartState } from '../store/reducers';
+import { SynthNode, FlowchartState } from '../store/reducers';
 
 describe('VcoComponent', () => {
   let component: VcoComponent;
@@ -10,7 +10,7 @@ describe('VcoComponent', () => {
   let store: MockStore<FlowchartState>;
   let dispatchSpy: jasmine.Spy;
 
-  const initialNode: NodeOf<'vco'> = {
+  const initialNode: SynthNode = {
     id: 'vco-1',
     type: 'vco',
     position: { x: 0, y: 0 },
@@ -56,7 +56,7 @@ describe('VcoComponent', () => {
 
   it('should receive node input', () => {
     expect(component.node.id).toBe('vco-1');
-    expect(component.node.config.frequency).toBe(440);
+    expect(component.node.config['frequency']).toBe(440);
   });
 
   it('update() should dispatch updateNode with updated config', () => {
@@ -66,26 +66,26 @@ describe('VcoComponent', () => {
 
     const action = dispatchSpy.calls.mostRecent().args[0] as ReturnType<typeof updateNode>;
 
-    const res = action.node as NodeOf<'vco'>;
+    const res = action.node as SynthNode;
 
     expect(action.type).toBe(updateNode.type);
-    expect(res.config.frequency).toBe(880);
+    expect(res.config['frequency']).toBe(880);
   });
 
   it('update() should not mutate the original node input', () => {
     component.update('pw', 0.75);
 
-    expect(component.node.config.pw).toBe(0.5); // original unchanged
+    expect(component.node.config['pw']).toBe(0.5); // original unchanged
   });
 
   it('update() should preserve other config values', () => {
     component.update('waveform', 'square');
 
     const action = dispatchSpy.calls.mostRecent().args[0] as ReturnType<typeof updateNode>;
-    const res = action.node as NodeOf<'vco'>;
+    const res = action.node as SynthNode;
 
-    expect(res.config.waveform).toBe('square');
-    expect(res.config.frequency).toBe(440);
-    expect(res.config.pw).toBe(0.5);
+    expect(res.config['waveform']).toBe('square');
+    expect(res.config['frequency']).toBe(440);
+    expect(res.config['pw']).toBe(0.5);
   });
 });
