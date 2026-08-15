@@ -7,7 +7,7 @@
   <!-- Attack -->
   <div class="flex items-center justify-between mb-1">
     <label for="attack-range" class="text-xs font-medium text-gray-600">Attack (s)</label>
-    <span class="text-xs tabular-nums">{{ node.config.attack }}</span>
+    <span class="text-xs tabular-nums">{{ node.config['attack'] }}</span>
   </div>
   <input
     type="range"
@@ -15,7 +15,7 @@
     max="2"
     step="0.001"
     class="w-full mb-2 accent-blue-500"
-    [ngModel]="node.config.attack"
+    [ngModel]="node.config['attack']"
     (ngModelChange)="update('attack', $event)"
     id="attack-range"
   />
@@ -23,7 +23,7 @@
   <!-- Decay -->
   <div class="flex items-center justify-between mb-1">
     <label for="decay-range" class="text-xs font-medium text-gray-600">Decay (s)</label>
-    <span class="text-xs tabular-nums">{{ node.config.decay }}</span>
+    <span class="text-xs tabular-nums">{{ node.config['decay'] }}</span>
   </div>
   <input
     id="decay-range"
@@ -32,14 +32,14 @@
     max="2"
     step="0.001"
     class="w-full mb-2 accent-blue-500"
-    [ngModel]="node.config.decay"
+    [ngModel]="node.config['decay']"
     (ngModelChange)="update('decay', $event)"
   />
 
   <!-- Sustain -->
   <div class="flex items-center justify-between mb-1">
     <label for="sustain-range" class="text-xs font-medium text-gray-600">Sustain</label>
-    <span class="text-xs tabular-nums">{{ node.config.sustain }}</span>
+    <span class="text-xs tabular-nums">{{ node.config['sustain'] }}</span>
   </div>
   <input
     id="sustain-range"
@@ -48,14 +48,14 @@
     max="1"
     step="0.01"
     class="w-full mb-2 accent-blue-500"
-    [ngModel]="node.config.sustain"
+    [ngModel]="node.config['sustain']"
     (ngModelChange)="update('sustain', $event)"
   />
 
   <!-- Release -->
   <div class="flex items-center justify-between mb-1">
     <label for="id-range" class="text-xs font-medium text-gray-600">Release (s)</label>
-    <span class="text-xs tabular-nums">{{ node.config.release }}</span>
+    <span class="text-xs tabular-nums">{{ node.config['release'] }}</span>
   </div>
   <input
     id="id-range"
@@ -64,7 +64,7 @@
     max="5"
     step="0.001"
     class="w-full accent-blue-500"
-    [ngModel]="node.config.release"
+    [ngModel]="node.config['release']"
     (ngModelChange)="update('release', $event)"
   />
 
@@ -76,7 +76,7 @@
         <div fNodeOutlet class="w-3 h-3 rounded-full bg-gray-700"></div>
         <div
           fNodeOutput
-          [fOutputId]="node.config.outputs.out"
+          [fOutputId]="node.config.outputs!['out']"
           fOutputConnectableSide="right"
           [fOutputMultiple]="true"
         ></div>
