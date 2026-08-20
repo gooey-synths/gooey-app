@@ -1,4 +1,4 @@
-const { USB_VID, USB_PID } = require('./usb-config');
+const { USB_VID, USB_PID } = require('../shared/usb-config');
 
 function parseUsbId(value) {
   if (typeof value === 'number') {
