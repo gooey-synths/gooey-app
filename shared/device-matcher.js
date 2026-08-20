@@ -1,14 +1,6 @@
-import { USB_VID, USB_PID } from './wire-protocol';
+const { USB_VID, USB_PID } = require('./usb-config');
 
-export interface UsbPortDescriptor {
-  portId: string;
-  portName?: string;
-  displayName?: string;
-  vendorId?: number | string;
-  productId?: number | string;
-}
-
-export function parseUsbId(value: number | string | undefined): number[] {
+function parseUsbId(value) {
   if (typeof value === 'number') {
     return Number.isInteger(value) ? [value] : [];
   }
@@ -40,11 +32,11 @@ export function parseUsbId(value: number | string | undefined): number[] {
   return [];
 }
 
-export function matchesUsbId(value: number | string | undefined, target: number): boolean {
+function matchesUsbId(value, target) {
   return parseUsbId(value).includes(target);
 }
 
-export function portNumber(name?: string): number | null {
+function portNumber(name) {
   if (!name) {
     return null;
   }
@@ -52,11 +44,7 @@ export function portNumber(name?: string): number | null {
   return match ? parseInt(match[1], 10) : null;
 }
 
-export function pickConfigPort(
-  ports: UsbPortDescriptor[],
-  vid = USB_VID,
-  pid = USB_PID,
-): UsbPortDescriptor | null {
+function pickConfigPort(ports, vid = USB_VID, pid = USB_PID) {
   const matching = ports.filter(
     (port) => matchesUsbId(port.vendorId, vid) && matchesUsbId(port.productId, pid),
   );
@@ -68,7 +56,7 @@ export function pickConfigPort(
     return matching[0];
   }
 
-  const name = (port: UsbPortDescriptor) => port.displayName || port.portName;
+  const name = (port) => port.displayName || port.portName;
 
   const numbered = matching.filter((port) => portNumber(name(port)) !== null);
   const unnumbered = matching.filter((port) => portNumber(name(port)) === null);
@@ -77,3 +65,5 @@ export function pickConfigPort(
 
   return [...numbered, ...unnumbered][0];
 }
+
+module.exports = { parseUsbId, matchesUsbId, portNumber, pickConfigPort };

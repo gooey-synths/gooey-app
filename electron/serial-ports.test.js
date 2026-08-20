@@ -1,14 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const {
-  USB_VID,
-  USB_PID,
-  parseUsbId,
-  matchesUsbId,
-  portNumber,
-  pickConfigPort,
-} = require('./serial-ports');
+const { USB_VID, USB_PID } = require('../shared/usb-config');
+const { parseUsbId, matchesUsbId, portNumber, pickConfigPort } = require('../shared/device-matcher');
 
 const makePort = (overrides = {}) => ({
   portId: 'port-1',

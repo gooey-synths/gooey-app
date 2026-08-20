@@ -1,8 +1,6 @@
-export const USB_VID = 0xcafe;
-export const USB_PID = 0x4000;
-export const BAUD_RATE = 115200;
-export const EOF_TERMINATOR = 0x1a;
-export const CHUNK_SIZE = 255;
+import { USB_VID, USB_PID, BAUD_RATE, EOF_TERMINATOR, CHUNK_SIZE } from '../../../../shared/usb-config';
+
+export { USB_VID, USB_PID, BAUD_RATE, EOF_TERMINATOR, CHUNK_SIZE };
 
 export function encodePayload(payload: string): Uint8Array {
   const bytes = new TextEncoder().encode(payload);
