@@ -1,5 +1,4 @@
-const USB_VID = 0xcafe;
-const USB_PID = 0x4000;
+import { USB_VID, USB_PID } from '../shared/usb-config';
 
 function parseUsbId(value) {
   if (typeof value === 'number') {
@@ -68,8 +67,6 @@ function pickConfigPort(ports) {
 }
 
 module.exports = {
-  USB_VID,
-  USB_PID,
   parseUsbId,
   matchesUsbId,
   portNumber,
