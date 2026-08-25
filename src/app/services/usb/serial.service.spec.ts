@@ -126,7 +126,7 @@ describe('SerialService', () => {
   });
 
   it('rejects send when not connected', async () => {
-    await expectAsync(service.send('data')).toBeRejectedWithError('Serial port is not connected');
+    await expectAsync(service.send('data')).toBeRejectedWithError('Serial port is not connected or not writable');
     expect(writes.length).toBe(0);
   });
 
