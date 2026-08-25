@@ -1,11 +1,13 @@
 import {
+  encodePayload,
+} from './wire-protocol';
+import {
   USB_VID,
   USB_PID,
   BAUD_RATE,
   EOF_TERMINATOR,
   CHUNK_SIZE,
-  encodePayload,
-} from './wire-protocol';
+ } from '../../../../shared/usb-config';
 
 describe('wire-protocol', () => {
   it('exposes the Gooey device USB vendor id', () => {

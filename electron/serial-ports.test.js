@@ -1,9 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+import { USB_PID, USB_VID } from '../shared/usb-config';
 
 const {
-  USB_VID,
-  USB_PID,
   parseUsbId,
   matchesUsbId,
   portNumber,

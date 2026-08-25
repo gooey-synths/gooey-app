@@ -1,6 +1,4 @@
-import { USB_VID, USB_PID, BAUD_RATE, EOF_TERMINATOR, CHUNK_SIZE } from '../../../../shared/usb-config';
-
-export { USB_VID, USB_PID, BAUD_RATE, EOF_TERMINATOR, CHUNK_SIZE };
+import { EOF_TERMINATOR } from '../../../../shared/usb-config';
 
 export function encodePayload(payload: string): Uint8Array {
   const bytes = new TextEncoder().encode(payload);

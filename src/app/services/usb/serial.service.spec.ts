@@ -1,6 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { SerialService } from './serial.service';
-import { BAUD_RATE, CHUNK_SIZE, encodePayload, USB_PID, USB_VID } from './wire-protocol';
+import { encodePayload } from './wire-protocol';
+import {
+  USB_VID,
+  USB_PID,
+  BAUD_RATE,
+  CHUNK_SIZE,
+} from '../../../../shared/usb-config';
 
 interface FakePort {
   open: jasmine.Spy;
