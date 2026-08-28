@@ -99,6 +99,13 @@ describe('SerialService', () => {
     expect(port.open).toHaveBeenCalledTimes(1);
   });
 
+  it('rejects and stays disconnected when the port picker is canceled', async () => {
+    fakeSerial.requestPort.and.rejectWith(new DOMException('User canceled the request', 'NotFoundError'));
+
+    await expectAsync(service.connect()).toBeRejected();
+    expect(service.isConnected()).toBe(false);
+  });
+
   it('sends the framed payload over the port', async () => {
     await service.connect();
     await service.send('{"modules":[]}');

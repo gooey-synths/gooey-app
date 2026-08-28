@@ -60,9 +60,11 @@ export class SerialService {
       this.connected.next(true);
 
     } catch (error) {
-      // Handles DOMException when user cancels the port picker
-      console.warn('Failed to connect to serial port:', error);
+      // Handles DOMException when user cancels the port picker (or a real failure).
+      // Re-throw so callers (effects) can react: a cancel must NOT mark us connected.
       this.connected.next(false);
+      this.port = null;
+      throw error;
     }
   }
 
