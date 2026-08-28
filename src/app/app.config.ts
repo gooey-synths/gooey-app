@@ -7,6 +7,8 @@ import { provideState, provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { flowchartReducer } from './store/reducers';
 import { FlowchartEffects } from './store/effects';
+import { hardwareReducer } from './store/hardware.reducer';
+import { HardwareEffects } from './store/hardware.effects';
 import { FileService } from './services/file.service';
 import { HardwareConfigService } from './services/usb/hardware-config.service';
 import { HardwareConfigMapper } from './services/usb/hardware-config.mapper';
@@ -21,7 +23,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideStore(),
     provideState({ name: 'flowchart', reducer: flowchartReducer }),
-    provideEffects([FlowchartEffects]),
+    provideState({ name: 'hardware', reducer: hardwareReducer }),
+    provideEffects([FlowchartEffects, HardwareEffects]),
     FileService,
     HardwareConfigService,
     provideHttpClient(),
