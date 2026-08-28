@@ -26,6 +26,27 @@ export class HardwareConfigMapperError extends Error {
   }
 }
 
+export function validateGraphDescription(graph: GraphDescription): void {
+  for (let i = 0; i < graph.modules.length; i++) {
+    const module = graph.modules[i];
+    if (!Number.isFinite(module.id)) {
+      throw new HardwareConfigMapperError(`module ${i} id is not a finite number`);
+    }
+    if (!module.args || typeof module.args !== 'object') {
+      throw new HardwareConfigMapperError(`module ${i} has no args map`);
+    }
+  }
+
+  for (const connection of graph.connections) {
+    if (!connection.input_port_name) {
+      throw new HardwareConfigMapperError('connection has an empty input port name');
+    }
+    if (!connection.output_port_name) {
+      throw new HardwareConfigMapperError('connection has an empty output port name');
+    }
+  }
+}
+
 interface NodeRoster {
   descriptor: ModuleDescriptor;
   node: SynthNode;

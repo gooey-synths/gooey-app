@@ -1,4 +1,4 @@
-import { HardwareConfigMapper } from './hardware-config.mapper';
+import { HardwareConfigMapper, validateGraphDescription } from './hardware-config.mapper';
 import { createModuleDescriptor, ModuleDescriptor } from './module-descriptor';
 import { FlowchartState, SynthNode } from '../../store/reducers';
 
@@ -127,5 +127,34 @@ describe('HardwareConfigMapper', () => {
         connections: [{ id: 'c', start: 'out-a', end: 'missing-input' }],
       }),
     ).toThrowError(/unknown input port/i);
+  });
+
+  it('passes schema validation for a well-formed result', () => {
+    const result = map({ nodes: [vcoNode('a')], connections: [] });
+
+    expect(() => validateGraphDescription(result)).not.toThrow();
+  });
+
+  it('rejects a module whose id is not a finite number', () => {
+    const result = { modules: [{ id: Number.NaN, args: {} }], connections: [] };
+
+    expect(() => validateGraphDescription(result)).toThrowError(/module.*id/i);
+  });
+
+  it('rejects a module with no args map', () => {
+    const result = { modules: [{ id: 1056, args: (null as unknown) as Record<string, string> }], connections: [] };
+
+    expect(() => validateGraphDescription(result)).toThrowError(/args/i);
+  });
+
+  it('rejects a connection with an empty port name', () => {
+    const result = {
+      modules: [{ id: 1056, args: {} }, { id: 103, args: {} }],
+      connections: [
+        { input_mod: 1, input_port_name: 'cv', output_mod: 0, output_port_name: '' },
+      ],
+    };
+
+    expect(() => validateGraphDescription(result)).toThrowError(/port name/i);
   });
 });
