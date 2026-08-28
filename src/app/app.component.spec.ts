@@ -8,7 +8,7 @@ import { DeviceStatus, SendStatus } from './store/hardware.reducer';
 import { selectDeviceStatus, selectSendStatus } from './store/selectors';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 
 @Component({ selector: 'app-main-canvas', template: '' })
 class MainCanvasStub {}
@@ -42,7 +42,7 @@ describe('AppComponent', () => {
     })
       .overrideComponent(AppComponent, {
         set: {
-          imports: [RouterTestingModule, MainCanvasStub, NodeSelectorStub, AsyncPipe, NgIf],
+          imports: [RouterTestingModule, MainCanvasStub, NodeSelectorStub, AsyncPipe],
         },
       })
       .compileComponents();

@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './node-selector/node-selector.component';
 import { MainCanvasComponent } from "./main-canvas/main-canvas.component";
@@ -15,7 +15,7 @@ import { selectDeviceStatus, selectSendStatus } from './store/selectors';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, SidebarComponent, MainCanvasComponent, AsyncPipe, NgIf],
+  imports: [RouterOutlet, SidebarComponent, MainCanvasComponent, AsyncPipe],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

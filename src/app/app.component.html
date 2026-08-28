@@ -10,21 +10,21 @@
         [class.bg-gray-500]="(deviceStatus$ | async) !== 'connected'"
         [title]="'Device: ' + (deviceStatus$ | async)"
       ></span>
-      <button
-        *ngIf="(deviceStatus$ | async) !== 'connected'; else disconnectButton"
-        (click)="onConnect()"
-        class="bg-blue-500 hover:bg-blue-600 px-4 py-2 mx-2 rounded"
-      >
-        Connect
-      </button>
-      <ng-template #disconnectButton>
+      @if ((deviceStatus$ | async) !== 'connected') {
+        <button
+          (click)="onConnect()"
+          class="bg-blue-500 hover:bg-blue-600 px-4 py-2 mx-2 rounded"
+        >
+          Connect
+        </button>
+      } @else {
         <button
           (click)="onDisconnect()"
           class="bg-gray-600 hover:bg-gray-500 px-4 py-2 mx-2 rounded"
         >
           Disconnect
         </button>
-      </ng-template>
+      }
       <button
         (click)="onSendToHardware()"
         [disabled]="(deviceStatus$ | async) !== 'connected' || (sendStatus$ | async) === 'sending'"
