@@ -8,6 +8,12 @@ import { provideEffects } from '@ngrx/effects';
 import { flowchartReducer } from './store/reducers';
 import { FlowchartEffects } from './store/effects';
 import { FileService } from './services/file.service';
+import { HardwareConfigService } from './services/usb/hardware-config.service';
+import { HardwareConfigMapper } from './services/usb/hardware-config.mapper';
+import {
+  DefaultModuleDescriptorRegistry,
+  MODULE_DESCRIPTOR_REGISTRY,
+} from './services/usb/module-descriptor-registry';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,7 +23,10 @@ export const appConfig: ApplicationConfig = {
     provideState({ name: 'flowchart', reducer: flowchartReducer }),
     provideEffects([FlowchartEffects]),
     FileService,
+    HardwareConfigService,
     provideHttpClient(),
-    { provide: 'Window', useValue: window }
+    { provide: 'Window', useValue: window },
+    { provide: MODULE_DESCRIPTOR_REGISTRY, useClass: DefaultModuleDescriptorRegistry },
+    { provide: HardwareConfigMapper, useFactory: () => new HardwareConfigMapper() },
   ]
 };
