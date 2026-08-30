@@ -16,7 +16,10 @@ interface FakePort {
   readable: ReadableStream<Uint8Array> | null;
 }
 
-function createFakePort(writes: Uint8Array[]): FakePort {
+function createFakePort(
+  writes: Uint8Array[],
+  readable: ReadableStream<Uint8Array> | null = null,
+): FakePort {
   const writable = new WritableStream<Uint8Array>({
     write(chunk) {
       writes.push(new Uint8Array(chunk));
@@ -29,7 +32,7 @@ function createFakePort(writes: Uint8Array[]): FakePort {
       .createSpy('getInfo')
       .and.returnValue({ usbVendorId: USB_VID, usbProductId: USB_PID }),
     writable,
-    readable: null,
+    readable,
   };
 }
 
@@ -177,5 +180,67 @@ describe('SerialService', () => {
     await service.connect();
     await service.disconnect();
     expect(values).toEqual([false, true, false]);
+  });
+
+  it('buffers incoming bytes and emits a message only at the EOF terminator', async () => {
+    let enqueue!: (chunk: Uint8Array) => void;
+    const readable = new ReadableStream<Uint8Array>({
+      start(controller) {
+        enqueue = (chunk) => controller.enqueue(chunk);
+      },
+    });
+    port = createFakePort(writes, readable);
+    fakeSerial.requestPort.and.resolveTo(port);
+
+    await service.connect();
+
+    const framed = encodePayload('{"ok":true}');
+    const received: string[] = [];
+    service.received$.subscribe((text) => received.push(text));
+
+    enqueue(framed.subarray(0, framed.length - 1));
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(received).toEqual([]);
+
+    enqueue(framed.subarray(framed.length - 1));
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(received).toEqual(['{"ok":true}']);
+  });
+
+  it('emits one message per frame, even when multiple frames arrive in a chunk', async () => {
+    let enqueue!: (chunk: Uint8Array) => void;
+    const readable = new ReadableStream<Uint8Array>({
+      start(controller) {
+        enqueue = (chunk) => controller.enqueue(chunk);
+      },
+    });
+    port = createFakePort(writes, readable);
+    fakeSerial.requestPort.and.resolveTo(port);
+
+    await service.connect();
+
+    const frames = new Uint8Array([
+      ...encodePayload('first'),
+      ...encodePayload('second'),
+    ]);
+
+    const received: string[] = [];
+    service.received$.subscribe((text) => received.push(text));
+
+    enqueue(frames);
+    await new Promise((resolve) => setTimeout(resolve));
+
+    expect(received).toEqual(['first', 'second']);
+  });
+
+  it('stops the read loop on disconnect', async () => {
+    const readable = new ReadableStream<Uint8Array>();
+    port = createFakePort(writes, readable);
+    fakeSerial.requestPort.and.resolveTo(port);
+
+    await service.connect();
+    await service.disconnect();
+
+    expect(port.close).toHaveBeenCalledTimes(1);
   });
 });

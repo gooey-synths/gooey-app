@@ -1,12 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Store, select } from '@ngrx/store';
 import { from, of } from 'rxjs';
-import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { SerialService } from '../services/usb/serial.service';
 import { HardwareConfigService } from '../services/usb/hardware-config.service';
-import { FlowchartState } from './reducers';
-import { selectAllNodes, selectAllConnections } from './selectors';
 import {
   connectDevice,
   connectDeviceSuccess,
@@ -21,7 +18,6 @@ import {
 @Injectable()
 export class HardwareEffects {
   private actions$ = inject(Actions);
-  private store = inject<Store<FlowchartState>>(Store);
   private serial = inject(SerialService);
   private hardwareConfig = inject(HardwareConfigService);
 
@@ -52,17 +48,12 @@ export class HardwareEffects {
   sendToHardware$ = createEffect(() =>
     this.actions$.pipe(
       ofType(sendToHardware),
-      withLatestFrom(
-        this.store.pipe(select(selectAllNodes)),
-        this.store.pipe(select(selectAllConnections)),
-      ),
-      switchMap(([, nodes, connections]) => {
-        const state: FlowchartState = { nodes, connections };
-        return from(this.hardwareConfig.send(state)).pipe(
+      switchMap(() =>
+        from(this.hardwareConfig.send()).pipe(
           map(() => sendToHardwareSuccess()),
           catchError((error: Error) => of(sendToHardwareFailure({ error }))),
-        );
-      }),
+        ),
+      ),
     ),
   );
 }

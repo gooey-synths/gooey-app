@@ -11,6 +11,7 @@ import {
   sendToHardware,
 } from './store/hardware.actions';
 import { selectDeviceStatus, selectSendStatus, selectLastError } from './store/selectors';
+import { SerialService } from './services/usb/serial.service';
 
 @Component({
   selector: 'app-root',
@@ -22,9 +23,18 @@ import { selectDeviceStatus, selectSendStatus, selectLastError } from './store/s
 export class AppComponent {
   title = 'gooey-app';
   private store = inject(Store);
+  private serial = inject(SerialService);
   deviceStatus$ = this.store.select(selectDeviceStatus);
   sendStatus$ = this.store.select(selectSendStatus);
   lastError$ = this.store.select(selectLastError);
+
+  constructor() {
+    this.serial.received$.subscribe((text) => {
+      if (text) {
+        console.log('[serial]', text);
+      }
+    });
+  }
 
   onSave() {
     this.store.dispatch(saveFlowchart({ filename: 'flowchart.json' }));

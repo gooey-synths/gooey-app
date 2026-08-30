@@ -108,7 +108,7 @@ describe('HardwareEffects', () => {
       effects.sendToHardware$.subscribe({
         next: (result) => {
           expect(result).toEqual(sendToHardwareSuccess());
-          expect(hardwareConfig.send).toHaveBeenCalledWith(mockState);
+          expect(hardwareConfig.send).toHaveBeenCalled();
           done();
         },
         error: done.fail,
