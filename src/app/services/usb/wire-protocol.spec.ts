@@ -15,7 +15,7 @@ describe('wire-protocol', () => {
   });
 
   it('exposes the Gooey device USB product id', () => {
-    expect(USB_PID).toBe(0x4000);
+    expect(USB_PID).toBe(0x4002);
   });
 
   it('exposes the negotiated baud rate of 115200', () => {

@@ -19,7 +19,7 @@ const makePort = (overrides = {}) => ({
 
 test('exposes the Gooey device ids', () => {
   assert.equal(USB_VID, 0xcafe);
-  assert.equal(USB_PID, 0x4000);
+  assert.equal(USB_PID, 0x4002);
 });
 
 test('parseUsbId handles numbers, hex and decimal strings', () => {
@@ -36,7 +36,7 @@ test('matchesUsbId matches our device ids in any common format', () => {
   assert.equal(matchesUsbId('0xcafe', USB_VID), true);
   assert.equal(matchesUsbId('cafe', USB_VID), true);
   assert.equal(matchesUsbId('51966', USB_VID), true);
-  assert.equal(matchesUsbId('4000', USB_PID), true);
+  assert.equal(matchesUsbId('4002', USB_PID), true);
   assert.equal(matchesUsbId('1234', USB_VID), false);
 });
 
@@ -73,8 +73,8 @@ test('pickConfigPort handles names with no trailing number without throwing', ()
 });
 
 test('pickConfigPort matches decimal and bare-hex string ids', () => {
-  const decimal = makePort({ displayName: 'Gooey (COM1)', vendorId: '51966', productId: '16384' });
-  const bareHex = makePort({ displayName: 'Gooey (COM1)', vendorId: 'cafe', productId: '4000' });
+  const decimal = makePort({ displayName: 'Gooey (COM1)', vendorId: '51966', productId: '16386' });
+  const bareHex = makePort({ displayName: 'Gooey (COM1)', vendorId: 'cafe', productId: '4002' });
   assert.equal(pickConfigPort([decimal]), decimal);
   assert.equal(pickConfigPort([bareHex]), bareHex);
 });
