@@ -6,8 +6,6 @@ export class HardwareConfigService {
   private serial = inject(SerialService);
 
   async send(): Promise<void> {
-    // TEMPORARY OVERRIDE: hardcode the payload sent to the hardware while the
-    // real mapping/graph logic is being developed. Remove once implemented.
     const payload = {
       modules: [
         { name: 'ai0', id: 2, args: { idx: '0' } },

@@ -45,7 +45,6 @@ export class SerialService {
     if (this.port) return;
 
     try {
-      // Always show the picker — no auto-connection to previously granted ports.
       const portToConnect = await navigator.serial.requestPort({
         filters: [{ usbVendorId: USB_VID, usbProductId: USB_PID }],
       });
@@ -57,8 +56,6 @@ export class SerialService {
       this.readLoop();
 
     } catch (error) {
-      // Handles DOMException when user cancels the port picker (or a real failure).
-      // Re-throw so callers (effects) can react: a cancel must NOT mark us connected.
       this.connected.next(false);
       this.port = null;
       throw error;
@@ -82,7 +79,6 @@ export class SerialService {
       console.error('Error writing to serial port:', error);
       throw error;
     } finally {
-      // Ensure lock is ALWAYS released, even if a chunk write fails (e.g. cable pulled)
       writer.releaseLock();
     }
   }
@@ -91,7 +87,6 @@ export class SerialService {
     const port = this.port;
     if (!port) return;
 
-    // Eagerly update UI state
     this.port = null;
     this.connected.next(false);
     await this.stopReading();
@@ -99,7 +94,6 @@ export class SerialService {
     try {
       await port.close();
     } catch (error) {
-      // This catches errors if the port is closed while a stream lock is still active
       console.warn('Error while closing serial port:', error);
     }
   }
@@ -115,7 +109,6 @@ export class SerialService {
     this.readController = controller;
     this.reader = reader;
 
-    // Bytes received but not yet terminated by an EOF_TERMINATOR byte.
     const buffer: number[] = [];
 
     void (async () => {
@@ -138,7 +131,6 @@ export class SerialService {
           }
         }
       } catch (error) {
-        // On abort we intentionally cancel the reader, so that's expected.
         if (!controller.signal.aborted) {
           console.error('Error reading from serial port:', error);
         }
@@ -163,7 +155,7 @@ export class SerialService {
       try {
         await reader.cancel();
       } catch {
-        // The read loop may have already released the lock.
+        // no-op
       }
     }
   }
