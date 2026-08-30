@@ -3,9 +3,6 @@
   <header class="bg-gray-800 text-white p-4 flex items-center justify-between">
     <h1 class="text-lg font-bold">Gooey App</h1>
     <div class="flex justify-between items-center">
-      @if (lastError$ | async; as lastError) {
-        <span class="text-red-400 text-sm mx-2" data-testid="device-error">{{ lastError }}</span>
-      }
       <span
         data-testid="connection-dot"
         class="inline-block w-3 h-3 rounded-full"

@@ -10,7 +10,7 @@ import {
   disconnectDevice,
   sendToHardware,
 } from './store/hardware.actions';
-import { selectDeviceStatus, selectSendStatus, selectLastError } from './store/selectors';
+import { selectDeviceStatus, selectSendStatus } from './store/selectors';
 import { SerialService } from './services/usb/serial.service';
 
 @Component({
@@ -26,7 +26,6 @@ export class AppComponent {
   private serial = inject(SerialService);
   deviceStatus$ = this.store.select(selectDeviceStatus);
   sendStatus$ = this.store.select(selectSendStatus);
-  lastError$ = this.store.select(selectLastError);
 
   constructor() {
     this.serial.received$.subscribe((text) => {
