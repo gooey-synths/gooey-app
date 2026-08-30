@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { Action } from '@ngrx/store';
 import { HardwareEffects } from './hardware.effects';
 import {
@@ -9,6 +9,7 @@ import {
   connectDeviceFailure,
   disconnectDevice,
   disconnectDeviceSuccess,
+  deviceDisconnected,
   sendToHardware,
   sendToHardwareSuccess,
   sendToHardwareFailure,
@@ -24,6 +25,7 @@ describe('HardwareEffects', () => {
   let effects: HardwareEffects;
   let serial: jasmine.SpyObj<SerialService>;
   let hardwareConfig: jasmine.SpyObj<HardwareConfigService>;
+  let deviceDisconnected$: Subject<void>;
 
   const mockState: FlowchartState = { nodes: [], connections: [] };
 
@@ -32,6 +34,8 @@ describe('HardwareEffects', () => {
     hardwareConfig = jasmine.createSpyObj<HardwareConfigService>('HardwareConfigService', [
       'send',
     ]);
+    deviceDisconnected$ = new Subject<void>();
+    serial.deviceDisconnected$ = deviceDisconnected$.asObservable();
     (serial.connect as jasmine.Spy).and.resolveTo();
     (serial.disconnect as jasmine.Spy).and.resolveTo();
     (hardwareConfig.send as jasmine.Spy).and.resolveTo();
@@ -98,6 +102,20 @@ describe('HardwareEffects', () => {
         },
         error: done.fail,
       });
+    });
+  });
+
+  describe('deviceDisconnected$', () => {
+    it('dispatches deviceDisconnected when the device unplugs', (done) => {
+      effects.deviceDisconnected$.subscribe({
+        next: (result) => {
+          expect(result).toEqual(deviceDisconnected());
+          done();
+        },
+        error: done.fail,
+      });
+
+      deviceDisconnected$.next();
     });
   });
 

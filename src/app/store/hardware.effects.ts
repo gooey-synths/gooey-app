@@ -10,6 +10,7 @@ import {
   connectDeviceFailure,
   disconnectDevice,
   disconnectDeviceSuccess,
+  deviceDisconnected,
   sendToHardware,
   sendToHardwareSuccess,
   sendToHardwareFailure,
@@ -43,6 +44,10 @@ export class HardwareEffects {
         ),
       ),
     ),
+  );
+
+  deviceDisconnected$ = createEffect(() =>
+    this.serial.deviceDisconnected$.pipe(map(() => deviceDisconnected())),
   );
 
   sendToHardware$ = createEffect(() =>

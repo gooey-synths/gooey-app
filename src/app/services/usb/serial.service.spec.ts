@@ -168,6 +168,43 @@ describe('SerialService', () => {
     expect(service.isConnected()).toBe(false);
   });
 
+  it('emits deviceDisconnected when the device is unplugged', async () => {
+    await service.connect();
+
+    let unplugged = false;
+    service.deviceDisconnected$.subscribe(() => (unplugged = true));
+
+    fakeSerial.emit('disconnect', port);
+    expect(unplugged).toBe(true);
+  });
+
+  it('does not emit deviceDisconnected on an explicit disconnect', async () => {
+    await service.connect();
+
+    let unplugged = false;
+    service.deviceDisconnected$.subscribe(() => (unplugged = true));
+
+    await service.disconnect();
+    expect(unplugged).toBe(false);
+  });
+
+  it('cancels the read stream when the device is unplugged', async () => {
+    let cancelled = false;
+    const readable = new ReadableStream<Uint8Array>({
+      cancel() {
+        cancelled = true;
+      },
+    });
+    port = createFakePort(writes, readable);
+    fakeSerial.requestPort.and.resolveTo(port);
+
+    await service.connect();
+    fakeSerial.emit('disconnect', port);
+    await new Promise((resolve) => setTimeout(resolve));
+
+    expect(cancelled).toBe(true);
+  });
+
   it('ignores disconnect events for other ports', async () => {
     await service.connect();
     fakeSerial.emit('disconnect', createFakePort([]));

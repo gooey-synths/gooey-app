@@ -16,11 +16,13 @@ export class SerialService {
   private port: SerialPort | null = null;
   private connected = new BehaviorSubject<boolean>(false);
   private received = new Subject<string>();
+  private deviceDisconnected = new Subject<void>();
   private readController: AbortController | null = null;
   private reader: ReadableStreamDefaultReader<Uint8Array> | null = null;
 
   connected$ = this.connected.asObservable();
   received$ = this.received.asObservable();
+  deviceDisconnected$ = this.deviceDisconnected.asObservable();
 
   constructor() {
     if (this.isSupported) {
@@ -164,6 +166,8 @@ export class SerialService {
     if (event.target === this.port) {
       this.port = null;
       this.connected.next(false);
+      void this.stopReading();
+      this.deviceDisconnected.next();
     }
   };
 }
