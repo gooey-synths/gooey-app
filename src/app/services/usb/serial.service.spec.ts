@@ -99,6 +99,16 @@ describe('SerialService', () => {
     expect(port.open).toHaveBeenCalledTimes(1);
   });
 
+  it('always shows the picker even when a previously granted device exists', async () => {
+    fakeSerial.getPorts.and.resolveTo([port]);
+
+    await service.connect();
+
+    expect(fakeSerial.requestPort).toHaveBeenCalled();
+    expect(fakeSerial.getPorts).not.toHaveBeenCalled();
+    expect(service.isConnected()).toBe(true);
+  });
+
   it('rejects and stays disconnected when the port picker is canceled', async () => {
     fakeSerial.requestPort.and.rejectWith(new DOMException('User canceled the request', 'NotFoundError'));
 

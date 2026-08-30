@@ -38,21 +38,10 @@ export class SerialService {
     if (this.port) return;
 
     try {
-      let portToConnect: SerialPort | undefined;
-
-      // 1. Try to find a previously approved port to skip the prompt
-      const existingPorts = await navigator.serial.getPorts();
-      portToConnect = existingPorts.find((p) => {
-        const info = p.getInfo();
-        return info.usbVendorId === USB_VID && info.usbProductId === USB_PID;
+      // Always show the picker — no auto-connection to previously granted ports.
+      const portToConnect = await navigator.serial.requestPort({
+        filters: [{ usbVendorId: USB_VID, usbProductId: USB_PID }],
       });
-
-      // 2. If no previously approved port, prompt the user
-      if (!portToConnect) {
-        portToConnect = await navigator.serial.requestPort({
-          filters: [{ usbVendorId: USB_VID, usbProductId: USB_PID }],
-        });
-      }
 
       await portToConnect.open({ baudRate: BAUD_RATE });
 

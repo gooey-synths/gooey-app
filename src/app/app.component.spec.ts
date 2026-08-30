@@ -5,7 +5,7 @@ import { saveFlowchart } from './store/actions';
 import { connectDevice, disconnectDevice, sendToHardware } from './store/hardware.actions';
 import { FlowchartState } from './store/reducers';
 import { DeviceStatus, SendStatus } from './store/hardware.reducer';
-import { selectDeviceStatus, selectSendStatus } from './store/selectors';
+import { selectDeviceStatus, selectSendStatus, selectLastError } from './store/selectors';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Component } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
@@ -50,6 +50,7 @@ describe('AppComponent', () => {
     store = TestBed.inject(MockStore);
     store.overrideSelector(selectDeviceStatus, deviceStatus);
     store.overrideSelector(selectSendStatus, sendStatus);
+    store.overrideSelector(selectLastError, null);
     dispatchSpy = spyOn(store, 'dispatch');
 
     fixture = TestBed.createComponent(AppComponent);
@@ -100,5 +101,22 @@ describe('AppComponent', () => {
 
     const dot = fixture.nativeElement.querySelector('[data-testid="connection-dot"]');
     expect(dot.classList.contains('bg-gray-500')).toBeTrue();
+  });
+
+  it('shows the last error message from the store', () => {
+    store.overrideSelector(selectLastError, 'Failed to open port');
+    store.refreshState();
+    fixture.detectChanges();
+
+    const error = fixture.nativeElement.querySelector('[data-testid="device-error"]');
+    expect(error).toBeTruthy();
+    expect(error.textContent).toContain('Failed to open port');
+  });
+
+  it('hides the error message when there is no error', () => {
+    fixture.detectChanges();
+
+    const error = fixture.nativeElement.querySelector('[data-testid="device-error"]');
+    expect(error).toBeNull();
   });
 });

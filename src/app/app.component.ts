@@ -10,7 +10,7 @@ import {
   disconnectDevice,
   sendToHardware,
 } from './store/hardware.actions';
-import { selectDeviceStatus, selectSendStatus } from './store/selectors';
+import { selectDeviceStatus, selectSendStatus, selectLastError } from './store/selectors';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +24,7 @@ export class AppComponent {
   private store = inject(Store);
   deviceStatus$ = this.store.select(selectDeviceStatus);
   sendStatus$ = this.store.select(selectSendStatus);
+  lastError$ = this.store.select(selectLastError);
 
   onSave() {
     this.store.dispatch(saveFlowchart({ filename: 'flowchart.json' }));
