@@ -2,7 +2,36 @@
   <!-- Toolbar -->
   <header class="bg-gray-800 text-white p-4 flex items-center justify-between">
     <h1 class="text-lg font-bold">Gooey App</h1>
-    <div class="flex justify-between">
+    <div class="flex justify-between items-center">
+      <span
+        data-testid="connection-dot"
+        class="inline-block w-3 h-3 rounded-full"
+        [class.bg-green-500]="(deviceStatus$ | async) === 'connected'"
+        [class.bg-gray-500]="(deviceStatus$ | async) !== 'connected'"
+        [title]="'Device: ' + (deviceStatus$ | async)"
+      ></span>
+      @if ((deviceStatus$ | async) !== 'connected') {
+        <button
+          (click)="onConnect()"
+          class="bg-blue-500 hover:bg-blue-600 px-4 py-2 mx-2 rounded"
+        >
+          Connect
+        </button>
+      } @else {
+        <button
+          (click)="onDisconnect()"
+          class="bg-gray-600 hover:bg-gray-500 px-4 py-2 mx-2 rounded"
+        >
+          Disconnect
+        </button>
+      }
+      <button
+        (click)="onSendToHardware()"
+        [disabled]="(deviceStatus$ | async) !== 'connected' || (sendStatus$ | async) === 'sending'"
+        class="bg-blue-500 hover:bg-blue-600 px-4 py-2 mx-2 rounded disabled:opacity-50"
+      >
+        {{ (sendStatus$ | async) === 'sending' ? 'Sending…' : 'Send to Hardware' }}
+      </button>
       <button (click)="onSave()" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 mx-2 rounded">
         Save
       </button>

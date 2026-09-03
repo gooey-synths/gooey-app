@@ -1,19 +1,28 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { encodePayload } from './wire-protocol';
 import {
   USB_VID,
   USB_PID,
   BAUD_RATE,
   CHUNK_SIZE,
+  EOF_TERMINATOR,
 } from '../../../../shared/usb-config';
+
+const DECODER = new TextDecoder();
 
 @Injectable({ providedIn: 'root' })
 export class SerialService {
   private port: SerialPort | null = null;
   private connected = new BehaviorSubject<boolean>(false);
+  private received = new Subject<string>();
+  private deviceDisconnected = new Subject<void>();
+  private readController: AbortController | null = null;
+  private reader: ReadableStreamDefaultReader<Uint8Array> | null = null;
 
   connected$ = this.connected.asObservable();
+  received$ = this.received.asObservable();
+  deviceDisconnected$ = this.deviceDisconnected.asObservable();
 
   constructor() {
     if (this.isSupported) {
@@ -38,31 +47,20 @@ export class SerialService {
     if (this.port) return;
 
     try {
-      let portToConnect: SerialPort | undefined;
-
-      // 1. Try to find a previously approved port to skip the prompt
-      const existingPorts = await navigator.serial.getPorts();
-      portToConnect = existingPorts.find((p) => {
-        const info = p.getInfo();
-        return info.usbVendorId === USB_VID && info.usbProductId === USB_PID;
+      const portToConnect = await navigator.serial.requestPort({
+        filters: [{ usbVendorId: USB_VID, usbProductId: USB_PID }],
       });
-
-      // 2. If no previously approved port, prompt the user
-      if (!portToConnect) {
-        portToConnect = await navigator.serial.requestPort({
-          filters: [{ usbVendorId: USB_VID, usbProductId: USB_PID }],
-        });
-      }
 
       await portToConnect.open({ baudRate: BAUD_RATE });
 
       this.port = portToConnect;
       this.connected.next(true);
+      this.readLoop();
 
     } catch (error) {
-      // Handles DOMException when user cancels the port picker
-      console.warn('Failed to connect to serial port:', error);
       this.connected.next(false);
+      this.port = null;
+      throw error;
     }
   }
 
@@ -83,7 +81,6 @@ export class SerialService {
       console.error('Error writing to serial port:', error);
       throw error;
     } finally {
-      // Ensure lock is ALWAYS released, even if a chunk write fails (e.g. cable pulled)
       writer.releaseLock();
     }
   }
@@ -92,15 +89,76 @@ export class SerialService {
     const port = this.port;
     if (!port) return;
 
-    // Eagerly update UI state
     this.port = null;
     this.connected.next(false);
+    await this.stopReading();
 
     try {
       await port.close();
     } catch (error) {
-      // This catches errors if the port is closed while a stream lock is still active
       console.warn('Error while closing serial port:', error);
+    }
+  }
+
+  private readLoop(): void {
+    const port = this.port;
+    if (!port?.readable) {
+      return;
+    }
+
+    const controller = new AbortController();
+    const reader = port.readable.getReader();
+    this.readController = controller;
+    this.reader = reader;
+
+    const buffer: number[] = [];
+
+    void (async () => {
+      try {
+        while (!controller.signal.aborted) {
+          const { value, done } = await reader.read();
+          if (done) {
+            break;
+          }
+          if (!value) {
+            continue;
+          }
+          for (const byte of value) {
+            if (byte === EOF_TERMINATOR) {
+              this.received.next(DECODER.decode(new Uint8Array(buffer)));
+              buffer.length = 0;
+            } else {
+              buffer.push(byte);
+            }
+          }
+        }
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error('Error reading from serial port:', error);
+        }
+      } finally {
+        if (this.readController === controller) {
+          this.readController = null;
+        }
+        if (this.reader === reader) {
+          this.reader = null;
+        }
+        reader.releaseLock();
+      }
+    })();
+  }
+
+  private async stopReading(): Promise<void> {
+    this.readController?.abort();
+    this.readController = null;
+    const reader = this.reader;
+    this.reader = null;
+    if (reader) {
+      try {
+        await reader.cancel();
+      } catch {
+        // no-op
+      }
     }
   }
 
@@ -108,6 +166,8 @@ export class SerialService {
     if (event.target === this.port) {
       this.port = null;
       this.connected.next(false);
+      void this.stopReading();
+      this.deviceDisconnected.next();
     }
   };
 }
