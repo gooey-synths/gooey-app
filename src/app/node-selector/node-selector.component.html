@@ -1,6 +1,6 @@
 <h2 class="text-md font-semibold mb-4">Elements</h2>
 <div class="space-y-2">
-    @for (node of nodeTypes; track $index) {
-        <div [fData]="node" fExternalItem class="p-2 bg-white rounded shadow hover:bg-gray-50 cursor-pointer">{{ node.type }}</div>
+    @for (definition of definitions; track definition.type) {
+        <div [fData]="definition" fExternalItem class="p-2 bg-white rounded shadow hover:bg-gray-50 cursor-pointer">{{ definition.label }}</div>
     }
 </div>

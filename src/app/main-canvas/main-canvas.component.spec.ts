@@ -4,7 +4,9 @@ import { MainCanvasComponent } from './main-canvas.component';
 import { selectAllConnections, selectAllNodes } from '../store/selectors';
 import { SynthNode } from '../store/reducers';
 import { take } from 'rxjs';
-import { removeConnection, removeNode } from '../store/actions';
+import { addNode, removeConnection, removeNode } from '../store/actions';
+
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 describe('MainCanvasComponent', () => {
   let component: MainCanvasComponent;
@@ -99,7 +101,38 @@ describe('MainCanvasComponent', () => {
     expect(storeConnections.length).toEqual(mockConnection.length);
   });
 
-  it('Dropping a node on the canvas should add one to the list', () => {
+  it('Dropping a registered node type should add it with config built from the definition', () => {
+    const dropEvent = {
+      data: {
+        type: 'vco',
+        config: 'anything'
+      },
+      rect: {
+        x: 100,
+        y: 100,
+        width: 100,
+        height: 100,
+        gravityCenter: {
+          x: 100,
+          y: 100
+        }
+      }
+    };
+
+    component.onDrop(dropEvent);
+
+    expect(dispatchSpy).toHaveBeenCalledTimes(1);
+    const action = dispatchSpy.calls.mostRecent().args[0] as ReturnType<typeof addNode>;
+    expect(action.node.type).toBe('vco');
+    expect(action.node.config['waveform']).toBe('sine');
+    expect(action.node.config['frequency']).toBe(440);
+    expect(action.node.config.inputs!['cv']).toMatch(UUID_REGEX);
+    expect(action.node.config.inputs!['pwm']).toMatch(UUID_REGEX);
+    expect(action.node.config.outputs!['out']).toMatch(UUID_REGEX);
+    expect(action.node.position).toEqual({ x: 100, y: 100 });
+  });
+
+  it('Dropping an unregistered node type should not dispatch', () => {
     const dropEvent = {
       data: {
         type: 'test',
@@ -119,7 +152,7 @@ describe('MainCanvasComponent', () => {
 
     component.onDrop(dropEvent);
 
-    expect(dispatchSpy).toHaveBeenCalled();
+    expect(dispatchSpy).not.toHaveBeenCalled();
   });
 
   it('Connecting two nodes should add a connection to the connection list', () => {

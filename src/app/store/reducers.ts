@@ -2,50 +2,18 @@ import { createReducer, on } from '@ngrx/store';
 import { addNode,updateNode, removeNode, addConnection, removeConnection } from './actions';
 
 
-export interface NodeConfigMap {
-  vco: {
-    waveform: 'sine' | 'square' | 'saw' | 'triangle';
-    frequency: number;
-    pw: number;
-    inputs: {
-      cv: string;
-      pwm: string;
-    };
-    outputs: {
-      out: string;
-    };
-  };
-  envelope: {
-    attack: number;   // seconds
-    decay: number;    // seconds
-    sustain: number;  // 0..1
-    release: number;  // seconds
-    outputs: {
-      out: string;
-    }
-  };
-  vca: {
-    inputs: {
-      audio: string; // node id of audio source
-      cv: string;    // node id of CV (envelope)
-    };
-  }
+export interface NodeConfig {
+  [key: string]: unknown;
+  inputs?: Record<string, string>;
+  outputs?: Record<string, string>;
 }
 
-export interface NodeBase<T extends keyof NodeConfigMap> {
+export interface SynthNode {
   id: string;
-  type: T;
+  type: string;
   position: { x: number; y: number };
-  config: NodeConfigMap[T];
+  config: NodeConfig;
 }
-
-export type SynthNode = {
-  [K in keyof NodeConfigMap]: NodeBase<K>
-}[keyof NodeConfigMap];
-
-export type NodeType = keyof NodeConfigMap;
-
-export type NodeOf<T extends NodeType> = NodeBase<T>;
 
 export interface Connection {
   id: string;

@@ -1,0 +1,91 @@
+<div class="bg-gray-100 border border-gray-300 rounded-md shadow-sm p-3 text-sm text-gray-800 w-56">
+
+  <div
+    fDragHandle
+    class="font-semibold text-gray-700 mb-2 border-b border-gray-300 pb-1 cursor-move select-none"
+  >
+    {{ definition?.label ?? node.type }}
+  </div>
+
+  @if (definition) {
+    @for (control of definition.controls ?? []; track control.key) {
+      @switch (control.type) {
+        @case ('range') {
+          <div class="flex items-center justify-between mb-1">
+            <label [for]="'control-' + node.id + '-' + control.key" class="text-xs font-medium text-gray-600">{{ control.label }}</label>
+            <span class="text-xs tabular-nums">{{ node.config[control.key] }}{{ control.unit ? ' ' + control.unit : '' }}</span>
+          </div>
+          <input
+            [id]="'control-' + node.id + '-' + control.key"
+            type="range"
+            [min]="control.min"
+            [max]="control.max"
+            [step]="control.step"
+            class="w-full mb-2 accent-blue-500"
+            [ngModel]="node.config[control.key]"
+            (ngModelChange)="update(control.key, $event)"
+          />
+        }
+        @case ('select') {
+          <div class="mb-3">
+            <label [for]="'control-' + node.id + '-' + control.key" class="block text-xs font-medium text-gray-600 mb-1">{{ control.label }}</label>
+            <select
+              [id]="'control-' + node.id + '-' + control.key"
+              [ngModel]="node.config[control.key]"
+              (ngModelChange)="update(control.key, $event)"
+              class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              @for (option of control.options; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+          </div>
+        }
+      }
+    }
+
+    @if ((definition.inputs ?? []).length) {
+      <div class="pt-2 border-t border-gray-300 flex flex-col">
+        <div class="text-xs font-semibold text-gray-700 mb-3">Inputs</div>
+        @for (input of definition.inputs; track input.key) {
+          <div class="flex items-center justify-between gap-1 text-xs text-gray-600 mb-1">
+            <div>
+              @if (input.connectable !== false) {
+                <div
+                  class="w-3 h-3 rounded-full bg-gray-700"
+                  fNodeInput
+                  [fInputId]="node.config.inputs![input.key]"
+                  fInputConnectableSide="left"
+                  [fInputMultiple]="false"
+                ></div>
+              } @else {
+                <div class="w-3 h-3 rounded-full bg-gray-700"></div>
+              }
+            </div>
+            <span>{{ input.label }}</span>
+          </div>
+        }
+      </div>
+    }
+
+    @if ((definition.outputs ?? []).length) {
+      <div class="flex flex-col justify-center mb-3">
+        <div class="text-xs font-semibold text-gray-700 mb-3">Outputs</div>
+        @for (output of definition.outputs; track output.key) {
+          <div class="flex items-center justify-between gap-1 text-xs text-gray-600 mb-1">
+            <span>{{ output.label }}</span>
+            <div>
+              <div fNodeOutlet class="w-3 h-3 rounded-full bg-gray-700"></div>
+              <div
+                fNodeOutput
+                [fOutputId]="node.config.outputs![output.key]"
+                fOutputConnectableSide="right"
+                [fOutputMultiple]="output.multiple ?? true"
+              ></div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
