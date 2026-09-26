@@ -29,6 +29,17 @@ f-connection{
   }
 }
 
+/* The foblex connectors declare a static `class` host binding
+   (classAttribute: "f-component f-node-input"), which replaces the class
+   attribute set on the element in our template. Port sizing and colour
+   therefore have to live here rather than as utility classes in the markup,
+   or the ports collapse to zero height and cannot be grabbed to connect. */
+.f-node-input,
+.f-node-output {
+  @apply w-3 h-3 rounded-full bg-gray-700;
+  cursor: crosshair;
+}
+
 
 
 

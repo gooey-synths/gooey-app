@@ -27,15 +27,11 @@ class StubNodeOutputDirective {
   @Input() fOutputConnectableSide?: string;
 }
 
-@Directive({ selector: '[fNodeOutlet]', standalone: true })
-class StubNodeOutletDirective {}
-
 const stubImports = [
   FormsModule,
   StubDragHandleDirective,
   StubNodeInputDirective,
   StubNodeOutputDirective,
-  StubNodeOutletDirective,
 ];
 
 // The shipped hardware modules have no controls, so a node exercising range and
@@ -204,7 +200,9 @@ describe('DynamicNodeComponent', () => {
     const outlets = fixture.nativeElement.querySelectorAll('[fNodeOutlet]');
 
     expect(outputs.length).toBe(1);
-    expect(outlets.length).toBe(1);
+    // An fNodeOutlet would render a second dot and, when dragged, resolve to
+    // the node's first connectable output rather than the one in this row.
+    expect(outlets.length).toBe(0);
   });
 
   it('should render a fallback header for an unknown node type', () => {
