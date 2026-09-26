@@ -115,3 +115,49 @@ export function validateNodes(file: NodesFile): ValidationError[] {
 
   return errors;
 }
+
+export interface RawDefinition {
+  file: string;
+  json: unknown;
+}
+
+export interface DefinitionLoadError {
+  file: string;
+  node: string;
+  message: string;
+}
+
+export interface LoadedDefinitions {
+  definitions: NodeDefinition[];
+  errors: DefinitionLoadError[];
+}
+
+export function loadDefinitions(files: RawDefinition[]): LoadedDefinitions {
+  const definitions: NodeDefinition[] = [];
+  const errors: DefinitionLoadError[] = [];
+  const seenTypes = new Set<string>();
+
+  for (const { file, json } of files) {
+    if (typeof json !== 'object' || json === null || Array.isArray(json)) {
+      errors.push({ file, node: file, message: 'file does not contain a JSON object' });
+      continue;
+    }
+
+    const fileErrors = validateNodes({ nodes: [json as NodeDefinition] });
+    if (fileErrors.length > 0) {
+      errors.push(...fileErrors.map(error => ({ file, ...error })));
+      continue;
+    }
+
+    const type = (json as NodeDefinition).type;
+    if (seenTypes.has(type)) {
+      errors.push({ file, node: type, message: `duplicate node type '${type}'` });
+      continue;
+    }
+    seenTypes.add(type);
+
+    definitions.push(json as NodeDefinition);
+  }
+
+  return { definitions, errors };
+}

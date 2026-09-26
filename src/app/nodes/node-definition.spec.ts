@@ -1,4 +1,4 @@
-import { validateNodes, NodesFile } from './node-definition';
+import { validateNodes, loadDefinitions, NodesFile } from './node-definition';
 
 describe('validateNodes', () => {
   it('should return no errors for a valid file', () => {
@@ -193,5 +193,52 @@ describe('validateNodes', () => {
     const errors = validateNodes(file);
     expect(errors.length).toBe(1);
     expect(errors[0].message).toContain('label');
+  });
+});
+
+describe('loadDefinitions', () => {
+  it('should return one definition per valid file, in input order', () => {
+    const result = loadDefinitions([
+      { file: 'vco.json', json: { type: 'vco', label: 'VCO' } },
+      { file: 'lfo.json', json: { type: 'lfo', label: 'LFO' } },
+    ]);
+
+    expect(result.errors).toEqual([]);
+    expect(result.definitions.map(d => d.type)).toEqual(['vco', 'lfo']);
+  });
+
+  it('should skip an invalid file and report which file was at fault', () => {
+    const result = loadDefinitions([
+      { file: 'vco.json', json: { type: 'vco', label: 'VCO' } },
+      { file: 'broken.json', json: { type: 'broken' } },
+    ]);
+
+    expect(result.definitions.map(d => d.type)).toEqual(['vco']);
+    expect(result.errors.length).toBe(1);
+    expect(result.errors[0].file).toBe('broken.json');
+    expect(result.errors[0].message).toContain('label');
+  });
+
+  it('should reject the second file when two files declare the same node type', () => {
+    const result = loadDefinitions([
+      { file: 'vco.json', json: { type: 'vco', label: 'VCO' } },
+      { file: 'vco-copy.json', json: { type: 'vco', label: 'VCO Again' } },
+    ]);
+
+    expect(result.definitions.length).toBe(1);
+    expect(result.errors.length).toBe(1);
+    expect(result.errors[0].file).toBe('vco-copy.json');
+    expect(result.errors[0].message).toContain('duplicate');
+  });
+
+  it('should skip a file that does not contain a JSON object', () => {
+    const result = loadDefinitions([
+      { file: 'vco.json', json: { type: 'vco', label: 'VCO' } },
+      { file: 'list.json', json: [{ type: 'vco' }] },
+      { file: 'null.json', json: null },
+    ]);
+
+    expect(result.definitions.map(d => d.type)).toEqual(['vco']);
+    expect(result.errors.map(e => e.file)).toEqual(['list.json', 'null.json']);
   });
 });

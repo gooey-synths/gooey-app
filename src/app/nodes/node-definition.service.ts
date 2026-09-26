@@ -1,22 +1,14 @@
 import { Injectable } from '@angular/core';
 import { v4 as uuidv4 } from 'uuid';
-import nodesFile from './nodes.json';
 import { NodeConfig } from '../store/reducers';
-import { NodeDefinition, NodesFile, validateNodes } from './node-definition';
-
-const nodes = nodesFile as unknown as NodesFile;
+import { NodeDefinition } from './node-definition';
+import { bundledDefinitions } from './bundled-definitions';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NodeDefinitionService {
-  private readonly definitions: NodeDefinition[] = nodes.nodes;
-
-  constructor() {
-    for (const error of validateNodes(nodes)) {
-      console.warn(`[NodeDefinitionService] ${error.node}: ${error.message}`);
-    }
-  }
+  private definitions: NodeDefinition[] = bundledDefinitions;
 
   getDefinitions(): NodeDefinition[] {
     return this.definitions;
