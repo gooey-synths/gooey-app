@@ -1,7 +1,8 @@
 import { NodeDefinition, loadDefinitions } from './node-definition';
-import vco from '../../../definitions/vco.json';
-import envelope from '../../../definitions/envelope.json';
-import vca from '../../../definitions/vca.json';
+import fastAnalogIn from '../../../definitions/fast_analog_in.json';
+import fastAnalogOut from '../../../definitions/fast_analog_out.json';
+import fastDigitalIn from '../../../definitions/fast_digital_in.json';
+import fastDigitalOut from '../../../definitions/fast_digital_out.json';
 
 // Fallback for contexts with no filesystem access: unit tests and the browser
 // under `ng serve`, where the Playwright suite runs. Electron replaces this at
@@ -9,9 +10,10 @@ import vca from '../../../definitions/vca.json';
 // NodeDefinitionService.load(), which is the only supported way to change the
 // set of node types in the packaged app.
 const files = [
-  { file: 'vco.json', json: vco },
-  { file: 'envelope.json', json: envelope },
-  { file: 'vca.json', json: vca },
+  { file: 'fast_analog_in.json', json: fastAnalogIn },
+  { file: 'fast_analog_out.json', json: fastAnalogOut },
+  { file: 'fast_digital_in.json', json: fastDigitalIn },
+  { file: 'fast_digital_out.json', json: fastDigitalOut },
 ];
 
 export const bundledDefinitions: NodeDefinition[] = loadDefinitions(files).definitions;

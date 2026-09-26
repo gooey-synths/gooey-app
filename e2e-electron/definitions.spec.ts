@@ -45,7 +45,7 @@ test('a node dropped into the definitions folder shows up after a restart', asyn
   const baseline: string = await first.page.locator('app-node-selector').innerText();
   await first.app.close();
 
-  expect(baseline).toContain('VCO');
+  expect(baseline).toContain('Fast Analog Out');
   expect(baseline).not.toContain('Smoke LFO');
 
   await writeFile(added, JSON.stringify({ type: 'zz-smoke-lfo', label: 'Smoke LFO' }));

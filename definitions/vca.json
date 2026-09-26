@@ -1,9 +1,0 @@
-{
-  "type": "vca",
-  "label": "VCA",
-  "inputs": [
-    { "key": "audio", "label": "Audio Input" },
-    { "key": "cv", "label": "CV Input" }
-  ],
-  "controls": []
-}

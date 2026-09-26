@@ -15,40 +15,29 @@ describe('MainCanvasComponent', () => {
   let dispatchSpy: jasmine.Spy;
   const mockNodes: SynthNode[] = [
     {
-      id: 'vco-1',
-      type: 'vco',
+      id: 'fast-analog-out-1',
+      type: 'fast_analog_out',
       position: { x: 0, y: 0 },
       config: {
-        waveform: 'sine',
-        frequency: 440,
-        pw: 0.5,
-        inputs: {
-          cv: 'cv-id',
-          pwm: 'pwm-id',
-        },
         outputs: {
           out: 'vout-id',
         },
       },
     },
     {
-      id: 'env-1',
-      type: 'envelope',
+      id: 'fast-analog-in-1',
+      type: 'fast_analog_in',
       position: { x: 0, y: 0 },
       config: {
-        attack: 0.01,
-        decay: 0.1,
-        sustain: 0.7,
-        release: 0.2,
-        outputs: {
-          out: 'out-id',
+        inputs: {
+          in: 'vin-id',
         },
       },
     }
   ];
 
   const mockConnection = [
-    { id: '3', start: 'out-id', end: 'cv-id' },
+    { id: '3', start: 'vout-id', end: 'vin-id' },
   ];
 
   beforeEach(async () => {
@@ -104,7 +93,7 @@ describe('MainCanvasComponent', () => {
   it('Dropping a registered node type should add it with config built from the definition', () => {
     const dropEvent = {
       data: {
-        type: 'vco',
+        type: 'fast_analog_out',
         config: 'anything'
       },
       rect: {
@@ -123,13 +112,37 @@ describe('MainCanvasComponent', () => {
 
     expect(dispatchSpy).toHaveBeenCalledTimes(1);
     const action = dispatchSpy.calls.mostRecent().args[0] as ReturnType<typeof addNode>;
-    expect(action.node.type).toBe('vco');
-    expect(action.node.config['waveform']).toBe('sine');
-    expect(action.node.config['frequency']).toBe(440);
-    expect(action.node.config.inputs!['cv']).toMatch(UUID_REGEX);
-    expect(action.node.config.inputs!['pwm']).toMatch(UUID_REGEX);
+    expect(action.node.type).toBe('fast_analog_out');
     expect(action.node.config.outputs!['out']).toMatch(UUID_REGEX);
     expect(action.node.position).toEqual({ x: 100, y: 100 });
+  });
+
+  it('Dropping an input node should build config with a uuid for its input port', () => {
+    const dropEvent = {
+      data: {
+        type: 'fast_analog_in',
+        config: 'anything'
+      },
+      rect: {
+        x: 40,
+        y: 60,
+        width: 100,
+        height: 100,
+        gravityCenter: {
+          x: 40,
+          y: 60
+        }
+      }
+    };
+
+    component.onDrop(dropEvent);
+
+    const action = dispatchSpy.calls.mostRecent().args[0] as ReturnType<typeof addNode>;
+    expect(action.node.type).toBe('fast_analog_in');
+    expect(Object.keys(action.node.config.inputs!)).toEqual(['in']);
+    expect(action.node.config.inputs!['in']).toMatch(UUID_REGEX);
+    expect(action.node.config.outputs).toBeUndefined();
+    expect(action.node.position).toEqual({ x: 40, y: 60 });
   });
 
   it('Dropping an unregistered node type should not dispatch', () => {
@@ -214,12 +227,12 @@ describe('MainCanvasComponent', () => {
   });
 
   it('Should remove a node if it is selected', () => {
-    component.selectedElement = 'vco-1';
+    component.selectedElement = 'fast-analog-out-1';
 
     component.removeElement();
 
     expect(dispatchSpy).toHaveBeenCalledOnceWith(
-      removeNode({id: 'vco-1'})
+      removeNode({id: 'fast-analog-out-1'})
     );
   });
 
@@ -232,8 +245,8 @@ describe('MainCanvasComponent', () => {
   });
 
   it('Should select the element with the id', () => {
-    component.selectElement('vco-1');
+    component.selectElement('fast-analog-out-1');
 
-    expect(component.selectedElement).toEqual('vco-1');
+    expect(component.selectedElement).toEqual('fast-analog-out-1');
   });
 });

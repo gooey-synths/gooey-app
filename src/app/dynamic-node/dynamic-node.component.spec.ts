@@ -7,6 +7,8 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { DynamicNodeComponent } from './dynamic-node.component';
 import { updateNode } from '../store/actions';
 import { SynthNode, FlowchartState } from '../store/reducers';
+import { NodeDefinition } from '../nodes/node-definition';
+import { NodeDefinitionService } from '../nodes/node-definition.service';
 
 @Directive({ selector: '[fDragHandle]', standalone: true })
 class StubDragHandleDirective {}
@@ -36,9 +38,47 @@ const stubImports = [
   StubNodeOutletDirective,
 ];
 
-const vcoNode: SynthNode = {
-  id: 'vco-1',
-  type: 'vco',
+// The shipped hardware modules have no controls, so a node exercising range and
+// select rendering, plus one exercising several connectable inputs, are defined
+// here and served by a stub. These specs are about the renderer, not about which
+// modules definitions/ currently ships.
+const MIXED: NodeDefinition = {
+  type: 'mixed',
+  label: 'Mixed Node',
+  inputs: [
+    { key: 'cv', label: 'V/Oct', connectable: false },
+    { key: 'pwm', label: 'PWM', connectable: false },
+  ],
+  outputs: [{ key: 'out', label: 'OUT' }],
+  controls: [
+    {
+      type: 'select',
+      key: 'waveform',
+      label: 'Wave',
+      default: 'sine',
+      options: [
+        { value: 'sine', label: 'Sine' },
+        { value: 'square', label: 'Square' },
+        { value: 'saw', label: 'Saw' },
+      ],
+    },
+    { type: 'range', key: 'frequency', label: 'Freq', default: 440, min: 20, max: 2000, step: 1 },
+    { type: 'range', key: 'pw', label: 'PW', default: 0.5, min: 0.05, max: 0.95, step: 0.01 },
+  ],
+};
+
+const DUAL_IN: NodeDefinition = {
+  type: 'dual_in',
+  label: 'Dual In',
+  inputs: [
+    { key: 'audio', label: 'Audio Input' },
+    { key: 'cv', label: 'CV Input' },
+  ],
+};
+
+const mixedNode: SynthNode = {
+  id: 'mixed-1',
+  type: 'mixed',
   position: { x: 0, y: 0 },
   config: {
     waveform: 'sine',
@@ -49,13 +89,18 @@ const vcoNode: SynthNode = {
   },
 };
 
-const vcaNode: SynthNode = {
-  id: 'vca-1',
-  type: 'vca',
+const dualInNode: SynthNode = {
+  id: 'dual-in-1',
+  type: 'dual_in',
   position: { x: 0, y: 0 },
   config: {
     inputs: { audio: 'audio-id', cv: 'cv-id' },
   },
+};
+
+const stubDefinitions = {
+  getDefinition: (type: string) => ({ mixed: MIXED, dual_in: DUAL_IN })[type],
+  getDefinitions: () => [MIXED, DUAL_IN],
 };
 
 const unknownNode: SynthNode = {
@@ -74,7 +119,10 @@ describe('DynamicNodeComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DynamicNodeComponent],
-      providers: [provideMockStore<FlowchartState>({})],
+      providers: [
+        provideMockStore<FlowchartState>({}),
+        { provide: NodeDefinitionService, useValue: stubDefinitions },
+      ],
     })
       .overrideComponent(DynamicNodeComponent, {
         set: { imports: stubImports },
@@ -86,7 +134,7 @@ describe('DynamicNodeComponent', () => {
     store = TestBed.inject(MockStore);
     dispatchSpy = spyOn(store, 'dispatch');
 
-    component.node = structuredClone(vcoNode);
+    component.node = structuredClone(mixedNode);
     fixture.detectChanges();
   });
 
@@ -95,12 +143,12 @@ describe('DynamicNodeComponent', () => {
   });
 
   it('should resolve the definition for the node type', () => {
-    expect(component.definition?.label).toBe('VCO');
+    expect(component.definition?.label).toBe('Mixed Node');
   });
 
   it('should render the definition label in the drag handle header', () => {
     const header = fixture.nativeElement.querySelector('[fDragHandle]') as HTMLElement;
-    expect(header.textContent).toContain('VCO');
+    expect(header.textContent).toContain('Mixed Node');
   });
 
   it('should render a range control with the correct min/max/step/value', () => {
@@ -131,7 +179,7 @@ describe('DynamicNodeComponent', () => {
   });
 
   it('should render one connectable input port per input definition', () => {
-    component.node = structuredClone(vcaNode);
+    component.node = structuredClone(dualInNode);
     fixture.detectChanges();
 
     const inputs = fixture.debugElement.queryAll(By.directive(StubNodeInputDirective));

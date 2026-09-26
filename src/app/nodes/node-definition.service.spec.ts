@@ -1,7 +1,26 @@
 import { TestBed } from '@angular/core/testing';
 import { NodeDefinitionService } from './node-definition.service';
+import { NodeDefinition } from './node-definition';
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// A node with controls, ports and non-connectable inputs. None of the shipped
+// hardware modules have controls, so the control and multi-port behaviour of
+// buildConfig is pinned to this fixture rather than to whatever happens to be
+// in definitions/ this month.
+const FIXTURE: NodeDefinition = {
+  type: 'fixture',
+  label: 'Fixture',
+  inputs: [
+    { key: 'cv', label: 'V/Oct', connectable: false },
+    { key: 'pwm', label: 'PWM' },
+  ],
+  outputs: [{ key: 'out', label: 'OUT' }],
+  controls: [
+    { type: 'select', key: 'waveform', label: 'Wave', default: 'sine', options: [{ value: 'sine', label: 'Sine' }] },
+    { type: 'range', key: 'frequency', label: 'Freq', default: 440, min: 20, max: 2000, step: 1 },
+  ],
+};
 
 describe('NodeDefinitionService', () => {
   let service: NodeDefinitionService;
@@ -19,33 +38,43 @@ describe('NodeDefinitionService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('getDefinitions() should return the definitions from the JSON file', () => {
+  it('getDefinitions() should return the definitions from the JSON files', () => {
     const defs = service.getDefinitions();
 
-    expect(defs.length).toBe(3);
-    expect(defs.map(d => d.type)).toEqual(['vco', 'envelope', 'vca']);
+    expect(defs.map(d => d.type)).toEqual([
+      'fast_analog_in',
+      'fast_analog_out',
+      'fast_digital_in',
+      'fast_digital_out',
+    ]);
   });
 
   it('getDefinition() should return the definition for an existing type', () => {
-    const def = service.getDefinition('vco');
+    const def = service.getDefinition('fast_analog_out');
 
-    expect(def?.label).toBe('VCO');
+    expect(def?.label).toBe('Fast Analog Out');
+  });
+
+  it('should carry the hardware module id and name prefix through to the caller', () => {
+    const def = service.getDefinition('fast_analog_in');
+
+    expect(def?.hw).toEqual({ id: 2, namePrefix: 'ai' });
+    expect(def?.inputs?.[0].hwPortName).toBe('in');
   });
 
   it('getDefinition() should return undefined for an unknown type', () => {
     expect(service.getDefinition('nope')).toBeUndefined();
   });
 
-  it('buildConfig() should seed control defaults for a vco', () => {
-    const config = service.buildConfig(service.getDefinition('vco')!);
+  it('buildConfig() should seed control defaults', () => {
+    const config = service.buildConfig(FIXTURE);
 
     expect(config['waveform']).toBe('sine');
     expect(config['frequency']).toBe(440);
-    expect(config['pw']).toBe(0.5);
   });
 
   it('buildConfig() should create a uuid per input port', () => {
-    const config = service.buildConfig(service.getDefinition('vco')!);
+    const config = service.buildConfig(FIXTURE);
 
     const inputs = config.inputs!;
     expect(Object.keys(inputs)).toEqual(['cv', 'pwm']);
@@ -54,7 +83,7 @@ describe('NodeDefinitionService', () => {
   });
 
   it('buildConfig() should create a uuid per output port', () => {
-    const config = service.buildConfig(service.getDefinition('vco')!);
+    const config = service.buildConfig(FIXTURE);
 
     const outputs = config.outputs!;
     expect(Object.keys(outputs)).toEqual(['out']);
@@ -62,17 +91,22 @@ describe('NodeDefinitionService', () => {
   });
 
   it('buildConfig() should not add outputs for a node without outputs', () => {
-    const config = service.buildConfig(service.getDefinition('vca')!);
+    const config = service.buildConfig(service.getDefinition('fast_analog_in')!);
 
     expect(config.outputs).toBeUndefined();
-    expect(Object.keys(config.inputs!)).toEqual(['audio', 'cv']);
-    expect(config.inputs!['audio']).toMatch(UUID_REGEX);
-    expect(config.inputs!['cv']).toMatch(UUID_REGEX);
+    expect(Object.keys(config.inputs!)).toEqual(['in']);
+    expect(config.inputs!['in']).toMatch(UUID_REGEX);
+  });
+
+  it('buildConfig() should not add controls for a node without controls', () => {
+    const config = service.buildConfig(service.getDefinition('fast_analog_out')!);
+
+    expect(Object.keys(config)).toEqual(['outputs']);
   });
 
   it('buildConfig() should generate unique uuids across calls', () => {
-    const first = service.buildConfig(service.getDefinition('vco')!);
-    const second = service.buildConfig(service.getDefinition('vco')!);
+    const first = service.buildConfig(FIXTURE);
+    const second = service.buildConfig(FIXTURE);
 
     expect(first.inputs!['cv']).not.toBe(second.inputs!['cv']);
     expect(first.inputs!['pwm']).not.toBe(second.inputs!['pwm']);
@@ -111,7 +145,12 @@ describe('NodeDefinitionService runtime loading', () => {
   it('load() should keep the bundled definitions when there is no bridge', async () => {
     await service.load();
 
-    expect(service.getDefinitions().map(d => d.type)).toEqual(['vco', 'envelope', 'vca']);
+    expect(service.getDefinitions().map(d => d.type)).toEqual([
+      'fast_analog_in',
+      'fast_analog_out',
+      'fast_digital_in',
+      'fast_digital_out',
+    ]);
   });
 
   it('load() should skip invalid entries from the bridge but keep the valid ones', async () => {

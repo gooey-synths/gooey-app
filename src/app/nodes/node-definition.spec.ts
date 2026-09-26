@@ -194,6 +194,53 @@ describe('validateNodes', () => {
     expect(errors.length).toBe(1);
     expect(errors[0].message).toContain('label');
   });
+
+  it('should accept hardware metadata on a node and its ports', () => {
+    const file: NodesFile = {
+      nodes: [
+        {
+          type: 'fast_analog_out',
+          label: 'Fast Analog Out',
+          hw: { id: 1, namePrefix: 'ao' },
+          outputs: [{ key: 'out', label: 'Out', hwPortName: 'out' }],
+        },
+      ],
+    };
+
+    expect(validateNodes(file)).toEqual([]);
+  });
+
+  it('should report hardware metadata with a non-numeric module id', () => {
+    const file: NodesFile = {
+      nodes: [
+        {
+          type: 'fast_analog_out',
+          label: 'Fast Analog Out',
+          hw: { id: 'one', namePrefix: 'ao' } as never,
+        },
+      ],
+    };
+
+    const errors = validateNodes(file);
+    expect(errors.length).toBe(1);
+    expect(errors[0].message).toContain('hw.id');
+  });
+
+  it('should report hardware metadata with an empty name prefix', () => {
+    const file: NodesFile = {
+      nodes: [
+        {
+          type: 'fast_analog_out',
+          label: 'Fast Analog Out',
+          hw: { id: 1, namePrefix: '' },
+        },
+      ],
+    };
+
+    const errors = validateNodes(file);
+    expect(errors.length).toBe(1);
+    expect(errors[0].message).toContain('hw.namePrefix');
+  });
 });
 
 describe('loadDefinitions', () => {

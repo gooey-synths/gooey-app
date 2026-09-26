@@ -1,8 +1,18 @@
+// How a node maps onto a hardware module. Values are not invented: they come
+// from the payload that HardwareConfigService already sends and the firmware
+// already accepts. fast_analog_out is id 1 and names its instances ao0, ao1...
+export interface HardwareMetadata {
+  id: number;
+  namePrefix: string;
+}
+
 export interface PortDefinition {
   key: string;
   label: string;
   connectable?: boolean;
   multiple?: boolean;
+  // Port name the firmware expects. Falls back to `key` when absent.
+  hwPortName?: string;
 }
 
 export interface SelectOption {
@@ -34,6 +44,8 @@ export type ControlDefinition = RangeControl | SelectControl;
 export interface NodeDefinition {
   type: string;
   label: string;
+  // Absent for nodes that are purely a UI concern and map to no module.
+  hw?: HardwareMetadata;
   inputs?: PortDefinition[];
   outputs?: PortDefinition[];
   controls?: ControlDefinition[];
@@ -68,6 +80,15 @@ export function validateNodes(file: NodesFile): ValidationError[] {
     }
     if (def.type) {
       seenTypes.add(def.type);
+    }
+
+    if (def.hw) {
+      if (typeof def.hw.id !== 'number') {
+        errors.push({ node: scope, message: 'hw.id must be a number' });
+      }
+      if (!def.hw.namePrefix) {
+        errors.push({ node: scope, message: 'hw.namePrefix must not be empty' });
+      }
     }
 
     const seenInputs = new Set<string>();
