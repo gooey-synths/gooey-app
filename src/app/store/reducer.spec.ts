@@ -1,6 +1,6 @@
 import { flowchartReducer, initialState } from './reducers';
 import { addConnection, removeConnection, addNode, removeNode } from './actions';
-import { NodeOf } from '../store/reducers';
+import { NodeOf, FlowchartState, Connection } from '../store/reducers';
 
 describe('Flowchart Reducer', () => {
   beforeEach(() => {
@@ -62,6 +62,92 @@ describe('Flowchart Reducer', () => {
     const state = flowchartReducer(initialState, action);
 
     expect(state.nodes.length).toBe(0);
+  });
+
+  it('should remove connections that referenced the removed node', () => {
+    const vco: NodeOf<'vco'> = {
+      id: 'vco-1',
+      type: 'vco',
+      position: { x: 0, y: 0 },
+      config: {
+        waveform: 'sine',
+        frequency: 440,
+        pw: 0.5,
+        inputs: {
+          cv: 'vco-cv-id',
+          pwm: 'vco-pwm-id',
+        },
+        outputs: {
+          out: 'vco-out-id',
+        },
+      },
+    };
+    const vca: NodeOf<'vca'> = {
+      id: 'vca-1',
+      type: 'vca',
+      position: { x: 0, y: 0 },
+      config: {
+        inputs: {
+          audio: 'vca-audio-id',
+          cv: 'vca-cv-id',
+        },
+      },
+    };
+    const state: FlowchartState = {
+      nodes: [vco, vca],
+      connections: [{ id: 'c1', start: 'vco-out-id', end: 'vca-audio-id' }],
+    };
+
+    const next = flowchartReducer(state, removeNode({ id: vco.id }));
+
+    expect(next.nodes.length).toBe(1);
+    expect(next.connections).toEqual([]);
+  });
+
+  it('should keep connections between nodes that were not removed', () => {
+    const envelope: NodeOf<'envelope'> = {
+      id: 'env-1',
+      type: 'envelope',
+      position: { x: 0, y: 0 },
+      config: {
+        attack: 0.01,
+        decay: 0.1,
+        sustain: 0.7,
+        release: 0.2,
+        outputs: { out: 'env-out-id' },
+      },
+    };
+    const vco: NodeOf<'vco'> = {
+      id: 'vco-1',
+      type: 'vco',
+      position: { x: 0, y: 0 },
+      config: {
+        waveform: 'sine',
+        frequency: 440,
+        pw: 0.5,
+        inputs: { cv: 'vco-cv-id', pwm: 'vco-pwm-id' },
+        outputs: { out: 'vco-out-id' },
+      },
+    };
+    const vca: NodeOf<'vca'> = {
+      id: 'vca-1',
+      type: 'vca',
+      position: { x: 0, y: 0 },
+      config: { inputs: { audio: 'vca-audio-id', cv: 'vca-cv-id' } },
+    };
+    const surviving: Connection = { id: 'c2', start: 'env-out-id', end: 'vca-cv-id' };
+    const state: FlowchartState = {
+      nodes: [envelope, vco, vca],
+      connections: [
+        { id: 'c1', start: 'vco-out-id', end: 'vca-audio-id' },
+        surviving,
+      ],
+    };
+
+    const next = flowchartReducer(state, removeNode({ id: vco.id }));
+
+    expect(next.nodes.map(node => node.id)).toEqual(['env-1', 'vca-1']);
+    expect(next.connections).toEqual([surviving]);
   });
 
   it('should add an element on addConnection action', () => {
