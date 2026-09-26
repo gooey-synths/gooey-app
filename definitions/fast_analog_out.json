@@ -1,0 +1,6 @@
+{
+  "type": "fast_analog_out",
+  "label": "Fast Analog Out",
+  "hw": { "id": 1, "namePrefix": "ao" },
+  "outputs": [{ "key": "out", "label": "Out", "hwPortName": "out", "multiple": true }]
+}

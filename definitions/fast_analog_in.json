@@ -1,0 +1,6 @@
+{
+  "type": "fast_analog_in",
+  "label": "Fast Analog In",
+  "hw": { "id": 2, "namePrefix": "ai" },
+  "inputs": [{ "key": "in", "label": "In", "hwPortName": "in", "multiple": true }]
+}

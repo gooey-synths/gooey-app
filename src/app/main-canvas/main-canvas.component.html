@@ -7,15 +7,7 @@
 
         @for (node of (nodeList$ | async); track node.id) {
           <div fNode  [fNodePosition]="{ x: node.position.x, y: node.position.y }">
-            @if (node.type === 'vco') {
-              <app-vco [node]="node"></app-vco>
-            }
-            @if (node.type === 'envelope') {
-              <app-envelope [node]="node"></app-envelope>
-            }
-            @if (node.type === 'vca') {
-              <app-vca [node]="node"></app-vca>
-            }
+            <app-dynamic-node [node]="node"></app-dynamic-node>
           </div>
         }
         @for (connection of (connectionList$ | async); track connection.id) {

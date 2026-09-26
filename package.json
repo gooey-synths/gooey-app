@@ -12,7 +12,9 @@
     "lint": "ng lint",
     "test": "ng test --watch=false --code-coverage --browsers=Chromium",
     "test:ci": "ng test --no-watch --no-progress --browsers=ChromeHeadless",
+    "test:electron": "node --test electron/*.test.js",
     "test:e2e": "playwright test",
+    "test:e2e:electron": "ng build --base-href=./ && playwright test --config=playwright.electron.config.ts",
     "start:forge": "electron-forge start"
   },
   "private": true,

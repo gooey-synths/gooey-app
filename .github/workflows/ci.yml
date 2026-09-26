@@ -27,6 +27,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Run Electron Main Process Tests
+        run: npm run test:electron
+
       - name: Run Unit Tests
         run: npm run test:ci
 
@@ -35,3 +38,8 @@ jobs:
 
       - name: Run E2E Tests with Playwright
         run: npm run test:e2e
+
+      # Electron needs a display. It works headless on a dev box with a GPU or
+      # a running X server, but not on a bare CI runner.
+      - name: Run Electron E2E Tests
+        run: xvfb-run --auto-servernum npm run test:e2e:electron

@@ -1,0 +1,6 @@
+{
+  "type": "fast_digital_in",
+  "label": "Fast Digital In",
+  "hw": { "id": 4, "namePrefix": "di" },
+  "inputs": [{ "key": "in", "label": "In", "hwPortName": "in", "multiple": true }]
+}
