@@ -31,9 +31,7 @@ export const initialState: FlowchartState = {
 };
 
 export function portUuidsOf(node: SynthNode | undefined): Set<string> {
-  const config = node?.config as
-    | { inputs?: Record<string, string>; outputs?: Record<string, string> }
-    | undefined;
+  const config = node?.config;
   if (!config) {
     return new Set();
   }
