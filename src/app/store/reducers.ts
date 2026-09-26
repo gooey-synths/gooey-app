@@ -62,6 +62,16 @@ export const initialState: FlowchartState = {
   connections: [],
 };
 
+export function portUuidsOf(node: SynthNode | undefined): Set<string> {
+  const config = node?.config as
+    | { inputs?: Record<string, string>; outputs?: Record<string, string> }
+    | undefined;
+  if (!config) {
+    return new Set();
+  }
+  return new Set([...Object.values(config.inputs ?? {}), ...Object.values(config.outputs ?? {})]);
+}
+
 export const flowchartReducer = createReducer(
   initialState,
   on(addNode, (state, action) => ({
@@ -77,10 +87,17 @@ export const flowchartReducer = createReducer(
       return node
     }),
   })),
-  on(removeNode, (state, action) => ({
-    ...state,
-    nodes: state.nodes.filter(node => node.id != action.id),
-  })),
+  on(removeNode, (state, action) => {
+    const removed = state.nodes.find(node => node.id === action.id);
+    const ports = portUuidsOf(removed);
+    return {
+      ...state,
+      nodes: state.nodes.filter(node => node.id != action.id),
+      connections: state.connections.filter(
+        connection => !ports.has(connection.start) && !ports.has(connection.end)
+      ),
+    };
+  }),
   on(addConnection, (state, action) => ({
     ...state,
     connections: [...state.connections, action.connection],
