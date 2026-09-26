@@ -11,6 +11,10 @@ describe('NodeDefinitionService', () => {
     service = TestBed.inject(NodeDefinitionService);
   });
 
+  afterEach(() => {
+    delete (globalThis as { gooey?: unknown }).gooey;
+  });
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
@@ -73,5 +77,56 @@ describe('NodeDefinitionService', () => {
     expect(first.inputs!['cv']).not.toBe(second.inputs!['cv']);
     expect(first.inputs!['pwm']).not.toBe(second.inputs!['pwm']);
     expect(first.outputs!['out']).not.toBe(second.outputs!['out']);
+  });
+});
+
+describe('NodeDefinitionService runtime loading', () => {
+  let service: NodeDefinitionService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(NodeDefinitionService);
+  });
+
+  afterEach(() => {
+    delete (globalThis as { gooey?: unknown }).gooey;
+  });
+
+  it('load() should replace the bundled definitions with what the bridge returns', async () => {
+    (globalThis as { gooey?: unknown }).gooey = {
+      readDefinitions: async () => ({
+        entries: [
+          { file: 'lfo.json', json: { type: 'lfo', label: 'LFO' } },
+          { file: 'vco.json', json: { type: 'vco', label: 'VCO' } },
+        ],
+        errors: [],
+      }),
+    };
+
+    await service.load();
+
+    expect(service.getDefinitions().map(d => d.type)).toEqual(['lfo', 'vco']);
+    expect(service.getDefinition('lfo')?.label).toBe('LFO');
+  });
+  it('load() should keep the bundled definitions when there is no bridge', async () => {
+    await service.load();
+
+    expect(service.getDefinitions().map(d => d.type)).toEqual(['vco', 'envelope', 'vca']);
+  });
+
+  it('load() should skip invalid entries from the bridge but keep the valid ones', async () => {
+    (globalThis as { gooey?: unknown }).gooey = {
+      readDefinitions: async () => ({
+        entries: [
+          { file: 'lfo.json', json: { type: 'lfo', label: 'LFO' } },
+          { file: 'broken.json', json: { type: 'broken' } },
+        ],
+        errors: [{ file: 'unparseable.json', message: 'Unexpected token' }],
+      }),
+    };
+
+    await service.load();
+
+    expect(service.getDefinitions().map(d => d.type)).toEqual(['lfo']);
   });
 });

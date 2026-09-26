@@ -135,7 +135,7 @@ export interface LoadedDefinitions {
 export function loadDefinitions(files: RawDefinition[]): LoadedDefinitions {
   const definitions: NodeDefinition[] = [];
   const errors: DefinitionLoadError[] = [];
-  const seenTypes = new Set<string>();
+  const claimedBy = new Map<string, string>();
 
   for (const { file, json } of files) {
     if (typeof json !== 'object' || json === null || Array.isArray(json)) {
@@ -150,11 +150,16 @@ export function loadDefinitions(files: RawDefinition[]): LoadedDefinitions {
     }
 
     const type = (json as NodeDefinition).type;
-    if (seenTypes.has(type)) {
-      errors.push({ file, node: type, message: `duplicate node type '${type}'` });
+    const claimant = claimedBy.get(type);
+    if (claimant !== undefined) {
+      errors.push({
+        file,
+        node: type,
+        message: `duplicate node type '${type}', already defined by ${claimant}`,
+      });
       continue;
     }
-    seenTypes.add(type);
+    claimedBy.set(type, file);
 
     definitions.push(json as NodeDefinition);
   }

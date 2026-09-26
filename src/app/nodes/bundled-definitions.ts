@@ -1,8 +1,7 @@
-import { NodeDefinition } from './node-definition';
-import { loadDefinitions } from './node-definition';
-import vco from './definitions/vco.json';
-import envelope from './definitions/envelope.json';
-import vca from './definitions/vca.json';
+import { NodeDefinition, loadDefinitions } from './node-definition';
+import vco from '../../../definitions/vco.json';
+import envelope from '../../../definitions/envelope.json';
+import vca from '../../../definitions/vca.json';
 
 // Fallback for contexts with no filesystem access: unit tests and the browser
 // under `ng serve`, where the Playwright suite runs. Electron replaces this at

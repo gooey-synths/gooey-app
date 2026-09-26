@@ -229,6 +229,7 @@ describe('loadDefinitions', () => {
     expect(result.errors.length).toBe(1);
     expect(result.errors[0].file).toBe('vco-copy.json');
     expect(result.errors[0].message).toContain('duplicate');
+    expect(result.errors[0].message).toContain('vco.json');
   });
 
   it('should skip a file that does not contain a JSON object', () => {
